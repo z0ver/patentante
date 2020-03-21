@@ -184,7 +184,7 @@ def getVendorByCouponID(coupon_id):
 
 
 def getCouponsByUserID(user_ID):
-    sqlstatement = """SELECT * FROM coupons WHERE customer_id=%s"""
+    sqlstatement = """SELECT coupons_ID,current_value,original_value,status,date_of_purchase FROM coupons WHERE customer_id=%s"""
     return getDataFromDB(sqlstatement, (user_ID,))
 
 

@@ -52,15 +52,16 @@ def response_valid_request(data):
     """
     #this area converts datetime values from python to strings so they are serializable
     for row in data:
-        for key, value in row.items():
-            if isinstance(value,list):
-                for list_index, list_value in enumerate(value):
-                    if isinstance(list_value, dict):
-                        for list_item_key, list_item_value in list_value.items():
-                            if isinstance(list_item_value, datetime):
-                                row[key][list_index][list_item_key] = list_item_value.strftime("%Y-%m-%d %H:%M:%S")
-            if isinstance(value,datetime):
-                row[key] = value.strftime("%Y-%m-%d %H:%M:%S")
+        if isinstance(row,dict):
+            for key, value in row.items():
+                if isinstance(value,list):
+                    for list_index, list_value in enumerate(value):
+                        if isinstance(list_value, dict):
+                            for list_item_key, list_item_value in list_value.items():
+                                if isinstance(list_item_value, datetime):
+                                    row[key][list_index][list_item_key] = list_item_value.strftime("%Y-%m-%d %H:%M:%S")
+                if isinstance(value,datetime):
+                    row[key] = value.strftime("%Y-%m-%d %H:%M:%S")
     _response = {}
     _response['Success'] = True
     _response['Status'] = 200

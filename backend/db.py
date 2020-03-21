@@ -3,7 +3,7 @@ import mysql.connector
 
 host = "localhost"
 user = "root"
-passwd = "A1!n3_578"
+passwd = "A1!n3_578"  # extract as env variable
 
 
 def getDbConnection():
@@ -23,7 +23,7 @@ def closeDbConnection(connection):
         print("Failed to close database connection {}".format(error))
 
 
-def getServerInformation():
+def printServerInformation():
     try:
         connection = getDbConnection()
 
@@ -43,32 +43,48 @@ def getServerInformation():
         connection.close()
 
 
-def getAllCustomerQuery():
+def getShopsByZipCode(zipcode):
     try:
         connection = getDbConnection()
         if connection.is_connected():
             cursor = connection.cursor()
-            sqlstatement = """SELECT * FROM Customers"""
-            cursor.execute(sqlstatement)
+            sqlstatement = """SELECT * FROM Shops WHERE zipCode=%s"""
+            cursor.execute(sqlstatement, (zipcode,))
             records = cursor.fetchall()
     except mysql.connector.Error as error:
-        print("Failed to read data from customers {}".format(error))
+        print("Failed to read data from Shops {}".format(error))
     finally:
         cursor.close()
         connection.close()
         return records  # how to handle empty return?
 
 
-def getShopsByZipCode(zipCode):
+def getShopsByName(name):
     try:
         connection = getDbConnection()
         if connection.is_connected():
             cursor = connection.cursor()
-            sqlstatement = """SELECT * FROM Shops WHERE zipCode=%s"""
-            cursor.execute(sqlstatement, (zipCode,))
+            sqlstatement = """SELECT * FROM Shops WHERE name=%s"""
+            cursor.execute(sqlstatement, (name,))
             records = cursor.fetchall()
     except mysql.connector.Error as error:
         print("Failed to read data from Shops {}".format(error))
+    finally:
+        cursor.close()
+        connection.close()
+        return records  # how to handle empty return?
+
+
+def getOffersByShopID(shop_id):
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            sqlstatement = """SELECT * FROM Offers WHERE shop_ID=%s"""
+            cursor.execute(sqlstatement, (shop_id,))
+            records = cursor.fetchall()
+    except mysql.connector.Error as error:
+        print("Failed to read data from Offers {}".format(error))
     finally:
         cursor.close()
         connection.close()
@@ -92,10 +108,3 @@ def insertCustomer(emailAddress, firstname, lastname, phoneNumber, passwordHash,
     finally:
         cursor.close()
         connection.close()
-
-
-getServerInformation()
-getAllCustomerQuery()
-insertCustomer("paprikator", "Paprika", "Terminator", "+666", "Hash", "pepper", "p4pr1k4", "1")
-getAllCustomerQuery()
-print(getShopsByZipCode(92224))

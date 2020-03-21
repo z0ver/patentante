@@ -157,6 +157,11 @@ def login_dealer():
         else:
             return response_unauthorized_request()
 
+@app.route('/shops/name', methods=['GET'])
+def shops_by_name():
+    if request.method == 'GET':
+        shopname = request.args.get('name')
+        return response_valid_request(getShopsByName(shopname))
 
 if __name__ == '__main__':
     app.run()

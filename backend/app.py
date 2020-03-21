@@ -1,8 +1,8 @@
 from flask import Flask, redirect, url_for, session, render_template, request, Response
 from flask_login import LoginManager, login_user, current_user, login_required
 from flask_session import Session
-import logging
-import json
+
+import simplejson as json
 from db import *
 from datetime import datetime
 
@@ -113,7 +113,7 @@ def insert_dealer_coupon():
         return response_valid_request({"couponId":1})
     elif request.method ==  'GET':
         profile_id = request.args.get('profileId')
-        #ToDo: After commit of the rest of the database functions
+        return response_valid_request(getCouponsByUserID(profile_id))
 
 
 

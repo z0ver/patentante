@@ -83,7 +83,13 @@ def getDataFromDB(sqlstatement, arguments):
         if connection.is_connected():
             cursor = connection.cursor()
             cursor.execute(sqlstatement, arguments)
-            records = cursor.fetchall()
+            data = cursor.fetchall()[0]
+            column_names = [one_column[0] for one_column in cursor.description]
+            for row in data:
+                record = {}
+                for column_index in range(0, len(column_names) - 1):
+                    record[column_names[column_index]] = data[column_index]
+                records.append(record)
     except mysql.connector.Error as error:
         print("Failed to get {}: {}".format(sqlstatement, error))
     finally:
@@ -176,7 +182,7 @@ def getVendorByCouponID(coupon_id):
 
 
 def getCouponsByUserID(user_ID):
-    sqlstatement = """SELECT * FROM Users WHERE user_ID=%s"""
+    sqlstatement = """SELECT * FROM coupons WHERE customer_id=%s"""
     return getDataFromDB(sqlstatement, (user_ID,))
 
 

@@ -9,7 +9,7 @@ passwd = "A1!n3_578"
 def getDbConnection():
     # Get database connection
     try:
-        connection = mysql.connector.connect(host=host, user=user, passwd=passwd,  charset="utf8")
+        connection = mysql.connector.connect(host=host, user=user, passwd=passwd,  database='test', charset="utf8")
         return connection
     except mysql.connector.Error as error:
         print("Failed to connect to database {}".format(error))

@@ -1,0 +1,4 @@
+Flask
+flask-login
+flask-session
+Werkzeug==0.16.0

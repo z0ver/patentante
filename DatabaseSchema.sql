@@ -1,6 +1,6 @@
 CREATE TABLE Customers (
  customer_id SERIAL PRIMARY KEY,
- emailAddress VARCHAR(50) NOT NULL, UNIQUE,
+ emailAddress VARCHAR(50) NOT NULL UNIQUE,
  firstname VARCHAR(30) NOT NULL,
  lastname VARCHAR(30) NOT NULL,
  phoneNumber VARCHAR(30),
@@ -13,7 +13,7 @@ CREATE TABLE Customers (
 
 CREATE TABLE Owners (
  owner_id SERIAL PRIMARY KEY,
- emailAddress VARCHAR(50) NOT NULL, UNIQUE,
+ emailAddress VARCHAR(50) NOT NULL UNIQUE,
  lastname VARCHAR(30) NOT NULL,
  phoneNumber VARCHAR(30) NOT NULL,
  passwordHash VARCHAR(64) NOT NULL,

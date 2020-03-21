@@ -1,6 +1,4 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import {Location, Appearance, GermanAddress} from '@angular-material-extensions/google-maps-autocomplete';
-import PlaceResult = google.maps.places.PlaceResult;
 import {HttpClient, HttpEvent, HttpHeaders} from '@angular/common/http';
 declare let L;
 
@@ -68,7 +66,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
             position => {
                 this.geolocationPosition = position
                 this.map.panTo(new L.LatLng(this.geolocationPosition.coords.latitude, this.geolocationPosition.coords.longitude));
-                console.log(this.geolocationPosition)
+
+                // TODO Request to places
             },
             error => {
                 switch (error.code) {
@@ -105,6 +104,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     if (this.postCodeMap[postCode].lat != undefined && this.postCodeMap[postCode].long != undefined) {
       this.map.panTo(new L.LatLng(this.postCodeMap[postCode].lat, this.postCodeMap[postCode].long));
+
+      // TODO Request to places
     }
   }
 }

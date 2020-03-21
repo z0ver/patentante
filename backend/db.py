@@ -205,6 +205,15 @@ def getCouponsByUserID(user_ID):
     sqlstatement = """SELECT coupons_ID,current_value,original_value,status,date_of_purchase FROM coupons WHERE customer_id=%s"""
     return getDataFromDB(sqlstatement, (user_ID,))
 
+def updateCouponValue(coupon_id,new_value,activated):
+    sqlstatement = """UPDATE coupons SET current_value=%s,status=%s WHERE coupons_ID=%s"""
+    data = (new_value,activated,coupon_id)
+    return updateDB(sqlstatement, data)
+
+def getUsedCouponsByUserID(user_ID):
+    sqlstatement = """SELECT coupons_ID,current_value,original_value,status,date_of_purchase FROM coupons WHERE customer_id=%s AND status='USED_UP'"""
+    return getDataFromDB(sqlstatement, (user_ID,))
+
 
 def getUserByMail(userMail):
     sqlstatement = """SELECT * FROM Users WHERE emailAddress=%s"""

@@ -122,8 +122,8 @@ def dealer_coupon():
         coupon_value = data.get('value')
         price = data.get('price')
         status = data.get('status')
-        insertCoupon(offer_ID=offer_id, customer_ID=profile_id, original_value=price,current_value=coupon_value,status=status,date_of_purchase=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        return response_valid_request({"couponId":1})
+        query_result = insertCoupon(offer_ID=offer_id, customer_ID=profile_id, original_value=price,current_value=coupon_value,status=status,date_of_purchase=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        return {"couponId": query_result.get("inserted_row")}
     elif request.method ==  'GET':
         profile_id = request.args.get('profileId')
         return response_valid_request(getCouponsByUserID(profile_id))
@@ -160,6 +160,7 @@ def get_dealers_by_zip():
     } for database_response in database_responses]
     return response_valid_request(final_response)
 
+#Login for users with owner status
 @app.route('/dealer/login', methods=['POST'])
 def login_dealer():
     if request.method == 'POST':
@@ -172,11 +173,24 @@ def login_dealer():
         else:
             return response_unauthorized_request()
 
+#Check for shops using a part of the name
 @app.route('/shops/name', methods=['GET'])
 def shops_by_name():
     if request.method == 'GET':
         shopname = request.args.get('name')
         return response_valid_request(getShopsByName(shopname))
+
+#Request a new coupon for a customer
+@app.route('/customer/request_coupon', methods=['POST'])
+def request_coupon():
+    data = request.get_json()
+    profile_id = data.get('profileId')
+    offer_id = data.get('offerId')
+    current_value = data.get('donation')
+    original_value = data.get('donation')
+    query_result = insertCoupon(offer_ID=offer_id, customer_ID=profile_id, original_value=original_value,current_value=current_value,status='ACTIVATE',date_of_purchase=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    return {"couponId":query_result.get("inserted_row")}
+
 
 if __name__ == '__main__':
     app.run()

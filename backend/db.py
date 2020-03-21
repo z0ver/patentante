@@ -194,4 +194,25 @@ def deleteShop(shop_ID):
         connection.close()
     return {'success': deletion_done}
 
+def deleteCoupon(coupon_ID):
+    deletion_done = False
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            sqlstatement = """DELETE FROM coupons WHERE coupons_ID = %s"""
+            data = (coupon_ID)
+            cursor.execute(sqlstatement, data)
+            connection.commit()
+            print(cursor.rowcount, "Record deleted successfully in Coupons table")
+            deletion_done = True
+    except mysql.connector.Error as error:
+        print("Failed to delete coupon {}".format(error))
+    finally:
+        cursor.close()
+        connection.close()
+    return {'success': deletion_done}
+
+
+
 

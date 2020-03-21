@@ -91,20 +91,43 @@ def getOffersByShopID(shop_id):
         return records  # how to handle empty return?
 
 
-def insertCustomer(emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified):
+def insertUser(emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified, isOwner):
     try:
         connection = getDbConnection()
         if connection.is_connected():
             cursor = connection.cursor()
-            sqlstatement = """INSERT INTO Customers (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified) 
+            sqlstatement = """INSERT INTO User (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified, isOwner) 
                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
-            data = (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified)
+            data = (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, False, isOwner)
             cursor.execute(sqlstatement, data)
             connection.commit()
-            print(cursor.rowcount, "Record inserted successfully into Customer table")
+
+            print(cursor.rowcount, "Record inserted successfully into User table")
 
     except mysql.connector.Error as error:
         print("Failed to insert customer {}".format(error))
     finally:
         cursor.close()
         connection.close()
+
+
+def insertCouponForCustomer(offer_ID, customer_ID, original_value, current_value, status, date_of_purchase):
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            sqlstatement = """INSERT INTO Coupons (offer_ID, customer_ID, original_value, current_value, status, date_of_purchase)
+                           VALUES (%s, %s, %s, %s, %s, %s)"""
+            data = (offer_ID, customer_ID, original_value, current_value, status, date_of_purchase)
+            cursor.execute(sqlstatement, data)
+            connection.commit()
+            print(cursor.rowcount, "Record inserted successfully into Coupons table")
+
+    except mysql.connector.Error as error:
+        print("Failed to insert customer {}".format(error))
+    finally:
+        cursor.close()
+        connection.close()
+
+
+

@@ -1,9 +1,11 @@
 # this file contains all functionality necessary to connect to the database
 import mysql.connector
-#Get Database connection details from app configuration
+
+# Get Database connection details from app configuration
 from config import db_host as host
-from config import db_user as user
 from config import db_passwd as passwd
+from config import db_user as user
+from config import db_session_timeout as timeout
 
 
 def getDbConnection():
@@ -24,7 +26,10 @@ def closeDbConnection(connection):
 
 
 def printServerInformation():
+    cursor = None
+    connection = None
     try:
+
         connection = getDbConnection()
 
         if connection.is_connected():
@@ -39,12 +44,16 @@ def printServerInformation():
     except mysql.connector.Error as error:
         print("Failed to get server information {}".format(error))
     finally:
-        cursor.close()
-        connection.close()
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
 
 
 def insertIntoDB(sqlstatement, data):
     inserted_row = None
+    cursor = None
+    connection = None
     try:
         connection = getDbConnection()
         if connection.is_connected():
@@ -57,8 +66,10 @@ def insertIntoDB(sqlstatement, data):
     except mysql.connector.Error as error:
         print("Failed to insert {}: {}".format(sqlstatement, error))
     finally:
-        cursor.close()
-        connection.close()
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
     if inserted_row:
         return {'success': True, 'inserted_row': inserted_row}
     else:

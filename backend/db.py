@@ -9,7 +9,7 @@ passwd = "A1!n3_578"
 def getDbConnection():
     # Get database connection
     try:
-        connection = mysql.connector.connect(host=host, user=user, passwd=passwd,  database='test', charset="utf8")
+        connection = mysql.connector.connect(host=host, user=user, passwd=passwd, database='test', charset="utf8")
         return connection
     except mysql.connector.Error as error:
         print("Failed to connect to database {}".format(error))
@@ -34,12 +34,12 @@ def getServerInformation():
             cursor.execute("select database();")
             record = cursor.fetchall()
             print("Your connected to - ", record)
-            cursor.close()
 
         closeDbConnection(connection)
     except mysql.connector.Error as error:
         print("Failed to get server information {}".format(error))
     finally:
+        cursor.close()
         connection.close()
 
 
@@ -55,12 +55,34 @@ def getAllCustomerQuery():
                 print(row)
                 # do sth
                 pass
-            cursor.close()
     except mysql.connector.Error as error:
         print("Failed to read all data from customers {}".format(error))
     finally:
+        cursor.close()
+        connection.close()
+        return records  # how to handle empty return?
+
+
+def insertCustomer(emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified):
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            sqlstatement = """INSERT INTO Customers (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified) 
+                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+            data = (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified)
+            cursor.execute(sqlstatement, data)
+            cursor.commit()
+            print("Record inserted successfully into Laptop table")
+
+    except mysql.connector.Error as error:
+        print("Failed to insert customer {}".format(error))
+    finally:
+        cursor.close()
         connection.close()
 
 
 getServerInformation()
+getAllCustomerQuery()
+insertCustomer("paprikator", "Paprika", "Terminator", "+666", "Hash", "pepper", "p4pr1k4", "1")
 getAllCustomerQuery()

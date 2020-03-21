@@ -72,7 +72,7 @@ def insertCustomer(emailAddress, firstname, lastname, phoneNumber, passwordHash,
                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
             data = (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified)
             cursor.execute(sqlstatement, data)
-            cursor.commit()
+            connection.commit()
             print("Record inserted successfully into Laptop table")
 
     except mysql.connector.Error as error:

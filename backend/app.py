@@ -1,7 +1,10 @@
-from flask import Flask, redirect, url_for, session, render_template, request
+from flask import Flask, redirect, url_for, session, render_template, request, Response
 from flask_login import LoginManager, login_user, current_user, login_required
 from flask_session import Session
 import logging
+import json
+from db import *
+from datetime import datetime
 
 from model import User
 from config import secret_key
@@ -16,7 +19,44 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login_page'
 
+def response_invalid_request():
+    """
+    Response to an invalid request.
+    :return: JSON
+    """
+    _response = {}
+    _response['Status'] = 400
+    _response['Success'] = False
+    _response['Result'] = 'Invalid request.'
+    return Response(response=json.dumps(_response, sort_keys=True, indent=4),
+                    status=400,
+                    mimetype="application/json")
 
+def response_unauthorized_request():
+    """
+    Response to an unauthorized request.
+    :return: JSON
+    """
+    _response = {}
+    _response['Success'] = False
+    _response['Status'] = 401
+    _response['Result'] = 'Unauthorized request.'
+    return Response(response=json.dumps(_response, sort_keys=True, indent=4),
+                    status=401,
+                    mimetype="application/json")
+
+def response_valid_request(data):
+    """
+    Response to a valid request.
+    :return: JSON wthat contains the input data
+    """
+    _response = {}
+    _response['Success'] = True
+    _response['Status'] = 200
+    _response['Result'] = data
+    return Response(response=json.dumps(_response, sort_keys=True, indent=4),
+                    status=200,
+                    mimetype="application/json")
 
 #Main page, ToDo: create main page template
 @app.route('/')
@@ -58,6 +98,23 @@ def loggedin_page():
         return redirect(url_for('index'))
     else:
         return redirect(url_for('login_page'))
+
+
+@app.route('/dealer/coupons',methods=['GET','POST'])
+def insert_dealer_coupon():
+    if request.method == 'POST':
+        data = request.get_json()
+        profile_id = data.get('profileId')
+        offer_id = data.get('offerId')
+        coupon_value = data.get('value')
+        price = data.get('price')
+        status = data.get('status')
+        insertCoupon(offer_ID=offer_id, customer_ID=profile_id, original_value=price,current_value=coupon_value,status=status,date_of_purchase=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        return response_valid_request({"couponId":1})
+    elif request.method ==  'GET':
+        profile_id = request.args.get('profileId')
+        #ToDo: After commit of the rest of the database functions
+
 
 
 if __name__ == '__main__':

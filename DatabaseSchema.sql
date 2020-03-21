@@ -1,0 +1,44 @@
+CREATE TABLE Users (
+ user_id SERIAL PRIMARY KEY,
+ emailAddress VARCHAR(50) NOT NULL UNIQUE,
+ firstname VARCHAR(30) NOT NULL,
+ lastname VARCHAR(30) NOT NULL,
+ phoneNumber VARCHAR(30),
+ passwordHash VARCHAR(64) NOT NULL,
+ passwordSalt VARCHAR(64) NOT NULL,
+ token VARCHAR(64) NOT NULL,
+ isVerified BOOLEAN NOT NULL,
+ isOwner BOOLEAN NOT NULL
+);
+
+CREATE TABLE Shops (
+ shop_ID SERIAL PRIMARY KEY,
+ owner_id VARCHAR(30) NOT NULL REFERENCES Users(user_id),
+ name VARCHAR(30) NOT NULL,
+ zipCode VARCHAR(10) NOT NULL,
+ city VARCHAR(10) NOT NULL,
+ street VARCHAR(50) NOT NULL,
+ description VARCHAR(3000) NOT NULL,
+ Logo_URL VARCHAR(150),
+ Link_Website VARCHAR(150),
+ phoneNumber VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Offers (
+ offer_ID SERIAL PRIMARY KEY,
+ shop_ID INT UNSIGNED NOT NULL REFERENCES Shops(shop_ID),
+ offerType ENUM('DONATION', 'VALUE', 'PRODUCT') NOT NULL,
+ name VARCHAR(50) NOT NULL,
+ description VARCHAR(50) NOT NULL,
+ value DECIMAL(6,4)
+);
+
+CREATE TABLE Coupons (
+ coupons_ID SERIAL PRIMARY KEY,
+ offer_ID INT UNSIGNED NOT NULL REFERENCES Offers(offer_ID),
+ customer_id INT UNSIGNED NOT NULL REFERENCES Customers(customer_id),
+ original_value DECIMAL(6,4) NOT NULL,
+ current_value DECIMAL(6,4) NOT NULL,
+ status ENUM('PAYMENT_PENDING','ACTIVATE','USED_UP') NOT NULL,
+ date_of_purchase TIMESTAMP NOT NULL
+);

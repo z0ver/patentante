@@ -1,5 +1,5 @@
-CREATE TABLE Customers (
- customer_id SERIAL PRIMARY KEY,
+CREATE TABLE Users (
+ user_id SERIAL PRIMARY KEY,
  emailAddress VARCHAR(50) NOT NULL UNIQUE,
  firstname VARCHAR(30) NOT NULL,
  lastname VARCHAR(30) NOT NULL,
@@ -8,24 +8,13 @@ CREATE TABLE Customers (
  passwordSalt VARCHAR(64) NOT NULL,
  token VARCHAR(64) NOT NULL,
  sessionKey VARCHAR(64) NOT NULL,
- isVerified BOOLEAN NOT NULL
-);
-
-CREATE TABLE Owners (
- owner_id SERIAL PRIMARY KEY,
- emailAddress VARCHAR(50) NOT NULL UNIQUE,
- lastname VARCHAR(30) NOT NULL,
- phoneNumber VARCHAR(30) NOT NULL,
- passwordHash VARCHAR(64) NOT NULL,
- passwordSalt VARCHAR(64) NOT NULL,
- token VARCHAR(64) NOT NULL,
- sessionKey VARCHAR(64) NOT NULL,
- isVerified BOOLEAN NOT NULL
+ isVerified BOOLEAN NOT NULL,
+ isOwner BOOLEAN NOT NULL
 );
 
 CREATE TABLE Shops (
  shop_ID SERIAL PRIMARY KEY,
- owner_email VARCHAR(30) NOT NULL REFERENCES Owners(owner_id),
+ owner_email VARCHAR(30) NOT NULL REFERENCES Users(user_id),
  name VARCHAR(30) NOT NULL,
  zipCode VARCHAR(10) NOT NULL,
  city VARCHAR(10) NOT NULL,

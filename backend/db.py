@@ -43,295 +43,199 @@ def printServerInformation():
         connection.close()
 
 
-def getShopsByZipCode(zipcode):
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """SELECT * FROM Shops WHERE zipCode=%s"""
-            cursor.execute(sqlstatement, (zipcode,))
-            records = cursor.fetchall()
-    except mysql.connector.Error as error:
-        print("Failed to read data from Shops {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-        return records  # how to handle empty return?
-
-
-def getShopsByName(name):
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """SELECT * FROM Shops WHERE name=%s"""
-            cursor.execute(sqlstatement, (name,))
-            records = cursor.fetchall()
-    except mysql.connector.Error as error:
-        print("Failed to read data from Shops {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-        return records  # how to handle empty return?
-
-
-def getOffersByShopID(shop_id):
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """SELECT * FROM Offers WHERE shop_ID=%s"""
-            cursor.execute(sqlstatement, (shop_id,))
-            records = cursor.fetchall()
-    except mysql.connector.Error as error:
-        print("Failed to read data from Offers {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-        return records  # how to handle empty return?
-
-
-def insertUser(emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified, isOwner):
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """INSERT INTO User (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified, isOwner) 
-                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
-            data = (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, False, isOwner)
-            cursor.execute(sqlstatement, data)
-            connection.commit()
-
-            print(cursor.rowcount, "Record inserted successfully into User table")
-
-    except mysql.connector.Error as error:
-        print("Failed to insert customer {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-
-def verifyUser(token):
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """UPDATE Users SET isVerified = true WHERE token = %s"""
-            cursor.execute(sqlstatement, (token,))
-            connection.commit()
-            print(cursor.rowcount, "User successfully verified.")
-
-    except mysql.connector.Error as error:
-        print("Failed to verify customer {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-
-def createOfferFixedValue(shop_ID, offerType, name, description, value) :
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """INSERT INTO Offers(shop_ID, offerType, name, description, value) 
-                              VALUES (%s,%s,%s,%s,%s)"""
-            data = (shop_ID, offerType, name, description, value)
-            cursor.execute(sqlstatement, data)
-            connection.commit()
-            print(cursor.rowcount, "Offer with fixed value successfully created.")
-
-    except mysql.connector.Error as error:
-        print("Failed to create offer {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-
-def createOfferVariableValue(shop_ID, offerType, name, description) :
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """INSERT INTO Offers(shop_ID, offerType, name, description) 
-                              VALUES (%s,%s,%s,%s,%s)"""
-            data = (shop_ID, offerType, name, description)
-            cursor.execute(sqlstatement, data)
-            connection.commit()
-            print(cursor.rowcount, "Offer with variable value successfully created.")
-
-    except mysql.connector.Error as error:
-        print("Failed to create offer {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-
-def deleteOffer(offer_ID) :
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """DELETE FROM Offers WHERE offer_ID = %s"""
-            cursor.execute(sqlstatement, (offer_ID,))
-            connection.commit()
-            print(cursor.rowcount, "Offer successfully deleted.")
-
-    except mysql.connector.Error as error:
-        print("Failed to delete offer {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-
-def updateOfferDetail(offer_ID, detail_column, newValue) :
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """UPDATE Offers SET %s = %s WHERE offer_ID = %s"""
-            data = (detail_column, newValue, offer_ID)
-            cursor.execute(sqlstatement, data)
-            connection.commit()
-            print(cursor.rowcount, "Offer successfully updated.")
-
-    except mysql.connector.Error as error:
-        print("Failed to update offer {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-
-def updateCouponValue(coupon_id, current_value):
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """Update Coupons SET current_value = %s WHERE CouponID = %s"""
-            data = (current_value, coupon_id)
-            cursor.execute(sqlstatement, data)
-            connection.commit()
-            print(cursor.rowcount, "Current value of coupon sucessfully updated")
-
-    except mysql.connector.Error as error:
-        print("Failed to update coupon value {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-
-
-def updateCouponStatus(coupon_id, status):
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """Update Coupons SET status = %s WHERE CouponID = %s"""
-            data = (status, coupon_id)
-            cursor.execute(sqlstatement, data)
-            connection.commit()
-            print(cursor.rowcount, "Current status of coupon sucessfully updated")
-
-    except mysql.connector.Error as error:
-        print("Failed to update coupon status {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-
-
-def insertCoupon(offer_ID, customer_ID, original_value, current_value, status, date_of_purchase):
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """INSERT INTO Coupons (offer_ID, customer_ID, original_value, current_value, status, date_of_purchase)
-                           VALUES (%s, %s, %s, %s, %s, %s)"""
-            data = (offer_ID, customer_ID, original_value, current_value, status, date_of_purchase)
-            cursor.execute(sqlstatement, data)
-            connection.commit()
-            print(cursor.rowcount, "Record inserted successfully into Coupons table")
-
-    except mysql.connector.Error as error:
-        print("Failed to insert customer {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-
-def insertShopDetails(shop_ID,owner_email,name,zipCode,city,street,description,Logo_URL,Link_Website,phoneNumber):
+def insertIntoDB(sqlstatement, data):
     inserted_row = None
     try:
         connection = getDbConnection()
         if connection.is_connected():
             cursor = connection.cursor()
-            sqlstatement = """INSERT INTO Shops (shop_ID,owner_email,name,zipCode,city,street,description,Logo_URL,Link_Website,phoneNumber) 
-                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
-            data = (shop_ID,owner_email,name,zipCode,city,street,description,Logo_URL,Link_Website,phoneNumber)
             cursor.execute(sqlstatement, data)
-            inserted_row = cursor.lastrowid
             connection.commit()
-            print(cursor.rowcount, "Record(s) inserted successfully into Shops table")
-
+            if cursor.rowcount > -1:
+                inserted_row = cursor.lastrowid
+                print(cursor.rowcount, "Record inserted successfully")
     except mysql.connector.Error as error:
-        print("Failed to insert shop {}".format(error))
+        print("Failed to insert {}: {}".format(sqlstatement, error))
     finally:
         cursor.close()
         connection.close()
     if inserted_row:
-        return {'success':True,'inserted_row':inserted_row}
+        return {'success': True, 'inserted_row': inserted_row}
     else:
-        return {'success':False,'inserted_row':inserted_row}
+        return {'success': False, 'inserted_row': inserted_row}
 
-def updateShowDetails(shop_ID,field_name,field_value):
+
+def getDataFromDB(sqlstatement, arguments):
+    records = []
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            cursor.execute(sqlstatement, arguments)
+            records = cursor.fetchall()
+    except mysql.connector.Error as error:
+        print("Failed to get {}: {}".format(sqlstatement, error))
+    finally:
+        cursor.close()
+        connection.close()
+    return records
+
+
+def updateDB(sqlstatement, data):
     updated_row = None
     try:
         connection = getDbConnection()
         if connection.is_connected():
             cursor = connection.cursor()
-            sqlstatement = """UPDATE Shops SET %s = %s WHERE shop_ID=%s"""
-            data = (field_name, field_value, shop_ID)
             cursor.execute(sqlstatement, data)
-            updated_row = cursor.lastrowid
             connection.commit()
-            print(cursor.rowcount, "Record(s) updated successfully in Shops table")
+            if cursor.rowcount > -1:
+                updated_row = cursor.lastrowid
+                print(cursor.rowcount, "record(s) updated successfully")
     except mysql.connector.Error as error:
-        print("Failed to update shop {}".format(error))
+        print("Failed to update {}: {}".format(sqlstatement, error))
     finally:
         cursor.close()
         connection.close()
     if updated_row:
-        return {'success':True,'updated_row':updated_row}
+        return {'success': True, 'updated_row': updated_row}
     else:
-        return {'success':False,'updated_row':updated_row}
+        return {'success': False, 'updated_row': updated_row}
+
+
+def deleteFromDB(sqlstatement, delete_id):
+    deletion_done = False
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            cursor.execute(sqlstatement, (delete_id,))
+            connection.commit()
+            if cursor.rowcount > -1:
+                deletion_done = True
+                print(cursor.rowcount, "record(s) updated successfully")
+    except mysql.connector.Error as error:
+        print("Failed to delete {} {}".format(sqlstatement, error))
+    finally:
+        cursor.close()
+        connection.close()
+    return {'success': deletion_done}
+
+
+def getShopsByZipCode(zipcode):
+    sqlstatement = """SELECT * FROM Shops WHERE zipCode=%s"""
+    return getDataFromDB(sqlstatement, (zipcode,))
+
+
+def getShopsByName(name):
+    sqlstatement = """SELECT * FROM Shops WHERE name=%s"""
+    return getDataFromDB(sqlstatement, (name,))
+
+
+def getCouponDetails(coupon_id):
+    sqlstatement = """SELECT * FROM Coupons WHERE coupon_ID=%s"""
+    return getDataFromDB(sqlstatement, (coupon_id,))
+
+
+def getOffersByShopID(shop_id):
+    sqlstatement = """SELECT * FROM Offers WHERE shop_ID=%s"""
+    return getDataFromDB(sqlstatement, (shop_id,))
+
+
+def getBuyerByCouponID(coupon_id):
+    sqlstatement = """SELECT Users.* FROM Users, Coupons WHERE Coupons.coupons_ID=%s AND Coupons.customer_id=Users.user_id"""
+    return getDataFromDB(sqlstatement, (coupon_id,))
+
+
+def getVendorByCouponID(coupon_id):
+    sqlstatement = """SELECT Users.* FROM `Coupons` INNER JOIN Offers on Coupons.offer_ID=Offers.offer_ID INNER JOIN Shops on Offers.shop_ID=Shops.shop_ID INNER JOIN Users ON Shops.owner_id=Users.user_id WHERE Coupons.coupons_ID=%s"""
+    getDataFromDB(sqlstatement, (coupon_id,))
+
+
+def getCouponsByUserID(user_ID):
+    sqlstatement = """SELECT * FROM Users WHERE user_ID=%s"""
+    return getDataFromDB(sqlstatement, (user_ID,))
+
+
+def insertUser(emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified, isOwner):
+    sqlstatement = """INSERT INTO User (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified, isOwner) 
+                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+    data = (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, False, isOwner)
+    return insertIntoDB(sqlstatement, data)
+
+
+def createOfferFixedValue(shop_ID, offerType, name, description, value):
+    sqlstatement = """INSERT INTO Offers(shop_ID, offerType, name, description, value) 
+                              VALUES (%s,%s,%s,%s,%s)"""
+    data = (shop_ID, offerType, name, description, value)
+    return insertIntoDB(sqlstatement, data)
+
+
+def createOfferVariableValue(shop_ID, offerType, name, description):
+    sqlstatement = """INSERT INTO Offers(shop_ID, offerType, name, description) 
+                              VALUES (%s,%s,%s,%s,%s)"""
+    data = (shop_ID, offerType, name, description)
+    return insertIntoDB(sqlstatement, data)
+
+
+def insertCoupon(offer_ID, customer_ID, original_value, current_value, status, date_of_purchase):
+    sqlstatement = """INSERT INTO Coupons (offer_ID, customer_ID, original_value, current_value, status, date_of_purchase)
+                           VALUES (%s, %s, %s, %s, %s, %s)"""
+    data = (offer_ID, customer_ID, original_value, current_value, status, date_of_purchase)
+    return insertIntoDB(sqlstatement, data)
+
+
+def insertShopDetails(shop_ID, owner_email, name, zipCode, city, street, description, Logo_URL, Link_Website,
+                      phoneNumber):
+    sqlstatement = """INSERT INTO Shops (shop_ID,owner_email,name,zipCode,city,street,description,Logo_URL,Link_Website,phoneNumber) 
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+    data = (shop_ID, owner_email, name, zipCode, city, street, description, Logo_URL, Link_Website, phoneNumber)
+    return insertIntoDB(sqlstatement, data)
+
+
+def updateOfferDetail(offer_ID, newName, newDesciption, newValue):
+    sqlstatement = """UPDATE Offers SET name = %s, description = %s, value=%s WHERE offer_ID = %s"""
+    data = (newName, newDesciption, newValue, offer_ID)
+    return updateDB(sqlstatement, data)
+
+
+def updateShowDetails(shop_ID, name, zipCode, city, street, description, Logo_URL, Link_Website, phoneNumber):
+    sqlstatement = """UPDATE Shops SET name=%s, zipCode=%s, city=%s, street=%s, description=%s, Logo_URL=%s, Link_Website=%s, phoneNumber=%s WHERE shop_ID=%s"""
+    data = (name, zipCode, city, street, description, Logo_URL, Link_Website, phoneNumber, shop_ID)
+    return updateDB(sqlstatement, data)
+
+
+def updateCurrentCouponValue(coupon_id, current_value):
+    sqlstatement = """Update Coupons SET current_value = %s WHERE CouponID = %s"""
+    data = (current_value, coupon_id)
+    return updateDB(sqlstatement, data)
+
+
+def updateCouponStatus(coupon_id, status):
+    sqlstatement = """Update Coupons SET status = %s WHERE CouponID = %s"""
+    data = (status, coupon_id)
+    return updateDB(sqlstatement, data)
+
+
+def verifyUser(user_ID):
+    sqlstatement = """UPDATE Users SET isVerified = True WHERE user_ID = %s"""
+    return updateDB(sqlstatement, (user_ID,))
+
+
+def deleteOffer(offer_ID):
+    sqlstatement = """DELETE FROM Offers WHERE offer_ID = %s"""
+    deleteFromDB(sqlstatement, offer_ID)
+
 
 def deleteShop(shop_ID):
-    deletion_done = False
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """DELETE FROM Shops WHERE shop_ID = %s"""
-            data = (shop_ID)
-            cursor.execute(sqlstatement, data)
-            connection.commit()
-            print(cursor.rowcount, "Record deleted successfully in Shops table")
-            deletion_done = True
-    except mysql.connector.Error as error:
-        print("Failed to delete shop {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-    return {'success': deletion_done}
+    sqlstatement = """DELETE FROM Shops WHERE shop_ID = %s"""
+    deleteFromDB(sqlstatement, shop_ID)
+
 
 def deleteCoupon(coupon_ID):
-    deletion_done = False
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """DELETE FROM coupons WHERE coupons_ID = %s"""
-            data = (coupon_ID)
-            cursor.execute(sqlstatement, data)
-            connection.commit()
-            print(cursor.rowcount, "Record deleted successfully in Coupons table")
-            deletion_done = True
-    except mysql.connector.Error as error:
-        print("Failed to delete coupon {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-    return {'success': deletion_done}
+    sqlstatement = """DELETE FROM coupons WHERE coupons_ID = %s"""
+    deleteFromDB(sqlstatement, coupon_ID)
+
 
 def deleteOwner(user_ID):
     deletion_done = False
@@ -339,25 +243,24 @@ def deleteOwner(user_ID):
         connection = getDbConnection()
         if connection.is_connected():
             cursor = connection.cursor()
-            #First, check if the user is an owner
-            data = (user_ID)
+            # First, check if the user is an owner
             sqlstatement = """SELECT isOwner FROM users WHERE user_id = %s"""
-            cursor.execute(sqlstatement, data)
+            cursor.execute(sqlstatement, (user_ID,))
             result_data = cursor.fetchall()
-            if result_data: #check if result is not empty
-                if 'isOwner' in result_data[0].keys(): #check if the wanted field is present
-                    if int(result_data[0]['isOwner'])==1:
+            if result_data:  # check if result is not empty
+                if 'isOwner' in result_data[0].keys():  # check if the wanted field is present
+                    if int(result_data[0]['isOwner']) == 1:
                         sqlstatement = """DELETE FROM users WHERE user_id = %s"""
-                        cursor.execute(sqlstatement, data)
-                        connection.commit()
-                        print(cursor.rowcount, "Owner deleted successfully in Users table")
-                        deletion_done = True
+                        result = deleteFromDB(sqlstatement, user_ID)
+                        deletion_done = result.get('success')
+                        if deletion_done:
+                            print(cursor.rowcount, "Owner deleted successfully in Users table")
     except mysql.connector.Error as error:
         print("Failed to delete owner {}".format(error))
     finally:
         cursor.close()
         connection.close()
-    return {'success':deletion_done}
+    return {'success': deletion_done}
 
 
 def deleteCustomer(user_ID):
@@ -366,37 +269,22 @@ def deleteCustomer(user_ID):
         connection = getDbConnection()
         if connection.is_connected():
             cursor = connection.cursor()
-            #First, check if the user is a customer
-            data = (user_ID)
+            # First, check if the user is a customer
             sqlstatement = """SELECT isOwner FROM users WHERE user_id = %s"""
-            cursor.execute(sqlstatement, data)
+            cursor.execute(sqlstatement, (user_ID,))
             result_data = cursor.fetchall()
-            if result_data: #check if result is not empty
-                if 'isOwner' in result_data[0].keys(): #check if the wanted field is present
-                    if int(result_data[0]['isOwner'])==0:
+            if result_data:  # check if result is not empty
+                if 'isOwner' in result_data[0].keys():  # check if the wanted field is present
+                    if int(result_data[0]['isOwner']) == 0:
                         sqlstatement = """DELETE FROM users WHERE user_id = %s"""
-                        cursor.execute(sqlstatement, data)
-                        connection.commit()
-                        print(cursor.rowcount, "Customer deleted successfully in Users table")
-                        deletion_done = True
+                        cursor.execute(sqlstatement, user_ID)
+                        result = deleteFromDB(sqlstatement, user_ID)
+                        deletion_done = result.get('success')
+                        if deletion_done:
+                            print(cursor.rowcount, "Customer deleted successfully in Users table")
     except mysql.connector.Error as error:
         print("Failed to delete user {}".format(error))
     finally:
         cursor.close()
         connection.close()
-    return {'success':deletion_done}
-    
-def getCouponDetails(coupon_id):
-    try:
-        connection = getDbConnection()
-        if connection.is_connected():
-            cursor = connection.cursor()
-            sqlstatement = """SELECT * FROM Coupons WHERE coupon_ID=%s"""
-            cursor.execute(sqlstatement, (coupon_id,))
-            records = cursor.fetchall()
-    except mysql.connector.Error as error:
-        print("Failed to read data from Offers {}".format(error))
-    finally:
-        cursor.close()
-        connection.close()
-        return records  # how to handle empty return?    
+    return {'success': deletion_done}

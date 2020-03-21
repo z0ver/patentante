@@ -38,31 +38,29 @@ def getServerInformation():
 
         closeDbConnection(connection)
     except mysql.connector.Error as error:
-        print("Failed to read database version {}".format(error))
+        print("Failed to get server information {}".format(error))
     finally:
         connection.close()
 
 
-def getQuery():
+def getAllCustomerQuery():
     try:
         connection = getDbConnection()
         if connection.is_connected():
-            try:
-                cursor = connection.cursor()
-                sqlstatement = """SELECT * FROM Customers"""
-                cursor.execute(sqlstatement)
-                records = cursor.fetchall()
-                for row in records:
-                    print(row)
-                    # do sth
-                    pass
-                cursor.close()
-            except mysql.connector.Error as error:
-                print("Failed to do simple get query {}".format(error))
+            cursor = connection.cursor()
+            sqlstatement = """SELECT * FROM Customers"""
+            cursor.execute(sqlstatement)
+            records = cursor.fetchall()
+            for row in records:
+                print(row)
+                # do sth
+                pass
+            cursor.close()
     except mysql.connector.Error as error:
-        print("Failed to read database version {}".format(error))
+        print("Failed to read all data from customers {}".format(error))
     finally:
         connection.close()
 
+
 getServerInformation()
-getQuery()
+getAllCustomerQuery()

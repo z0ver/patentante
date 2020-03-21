@@ -83,12 +83,13 @@ def getDataFromDB(sqlstatement, arguments):
         if connection.is_connected():
             cursor = connection.cursor()
             cursor.execute(sqlstatement, arguments)
-            data = cursor.fetchall()[0]
+
+            data = cursor.fetchall()
             column_names = [one_column[0] for one_column in cursor.description]
             for row in data:
                 record = {}
                 for column_index in range(0, len(column_names) - 1):
-                    record[column_names[column_index]] = data[column_index]
+                    record[column_names[column_index]] = row[column_index]
                 records.append(record)
     except mysql.connector.Error as error:
         print("Failed to get {}: {}".format(sqlstatement, error))

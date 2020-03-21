@@ -132,6 +132,18 @@ def deleteFromDB(sqlstatement, delete_id):
         connection.close()
     return {'success': deletion_done}
 
+def getSessionIDByUser(user_ID):
+    sqlstatement = """SELECT session_token FROM sessions where user_ID = %s"""
+    return getDataFromDB(sqlstatement, (user_ID,))
+
+def insertSessionID(user_ID, session_ID):
+    sqlstatement = """INSERT INTO Sessions(user_ID, session_token) 
+    VALUES (%s,%s,TIMESTAMPADD(MINUTE, %s, CURRENT_TIMESTAMP))"""
+    return insertIntoDB(sqlstatement, (user_ID, session_ID, db_session_timeout))
+
+def updateExpiringSession(session_ID):
+    sqlstatement = """UPDATE sessions SET end_date=TIMESTAMPADD(MINUTE, %s, CURRENT_TIMESTAMP) where session_token = %s"""
+    return updateDB(sqlstatement, (db_session_timeout, session_ID))
 
 def getShopsByZipCode(zipcode):
     sqlstatement = """SELECT * FROM Shops WHERE zipCode=%s"""

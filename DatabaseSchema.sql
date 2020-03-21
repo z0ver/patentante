@@ -42,3 +42,9 @@ CREATE TABLE Coupons (
  status ENUM('PAYMENT_PENDING','ACTIVATE','USED_UP') NOT NULL,
  date_of_purchase TIMESTAMP NOT NULL
 );
+
+CREATE TABLE Sessions (
+user_ID INT REFERENCES Users(user_id),
+session_token VARCHAR(64) UNIQUE,
+end_date TIMESTAMP NOT NULL
+);

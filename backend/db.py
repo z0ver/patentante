@@ -1,11 +1,21 @@
 # this file contains all functionality necessary to connect to the database
+
+import bcrypt
 import mysql.connector
 
 # Get Database connection details from app configuration
 from config import db_host as host
 from config import db_passwd as passwd
-from config import db_user as user
 from config import db_session_timeout as timeout
+from config import db_user as user
+
+
+def get_hashed_password(plain_text_password):
+    return bcrypt.hashpw(plain_text_password, bcrypt.gensalt())
+
+
+def check_password(plain_text_password, hashed_password):
+    return bcrypt.checkpw(plain_text_password, hashed_password)
 
 
 def getDbConnection():
@@ -78,6 +88,8 @@ def insertIntoDB(sqlstatement, data):
 
 def getDataFromDB(sqlstatement, arguments):
     records = []
+    cursor = None
+    connection = None
     try:
         connection = getDbConnection()
         if connection.is_connected():
@@ -86,7 +98,7 @@ def getDataFromDB(sqlstatement, arguments):
 
             data = cursor.fetchall()
             column_names = [one_column[0] for one_column in cursor.description]
-            #Put database result in easily usable dict schema
+            # Put database result in easily usable dict schema
             for row in data:
                 record = {}
                 for column_index in range(0, len(column_names)):
@@ -95,8 +107,10 @@ def getDataFromDB(sqlstatement, arguments):
     except mysql.connector.Error as error:
         print("Failed to get {}: {}".format(sqlstatement, error))
     finally:
-        cursor.close()
-        connection.close()
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
     return records
 
 
@@ -140,18 +154,22 @@ def deleteFromDB(sqlstatement, delete_id):
         connection.close()
     return {'success': deletion_done}
 
-def getSessionIDByUser(user_ID):
-    sqlstatement = """SELECT session_token FROM sessions where user_ID = %s"""
-    return getDataFromDB(sqlstatement, (user_ID,))
 
 def insertSessionID(user_ID, session_ID):
     sqlstatement = """INSERT INTO Sessions(user_ID, session_token) 
     VALUES (%s,%s,TIMESTAMPADD(MINUTE, %s, CURRENT_TIMESTAMP))"""
-    return insertIntoDB(sqlstatement, (user_ID, session_ID, db_session_timeout))
+    return insertIntoDB(sqlstatement, (user_ID, session_ID, timeout))
+
 
 def updateExpiringSession(session_ID):
     sqlstatement = """UPDATE sessions SET end_date=TIMESTAMPADD(MINUTE, %s, CURRENT_TIMESTAMP) where session_token = %s"""
-    return updateDB(sqlstatement, (db_session_timeout, session_ID))
+    return updateDB(sqlstatement, (timeout, session_ID))
+
+
+def getSessionIDByUser(user_ID):
+    sqlstatement = """SELECT session_token FROM sessions where user_ID = %s"""
+    return getDataFromDB(sqlstatement, (user_ID,))
+
 
 def getShopsByZipCode(zipcode):
     sqlstatement = """SELECT * FROM Shops WHERE zipCode=%s"""
@@ -188,9 +206,14 @@ def getCouponsByUserID(user_ID):
     return getDataFromDB(sqlstatement, (user_ID,))
 
 
+def getUserByMail(userMail):
+    sqlstatement = """SELECT * FROM Users WHERE emailAddress=%s"""
+    return getDataFromDB(sqlstatement, (userMail,))
+
+
 def insertUser(emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified, isOwner):
-    sqlstatement = """INSERT INTO User (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified, isOwner) 
-                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+    sqlstatement = """INSERT INTO Users (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified, isOwner) 
+                           VALUES (%s, %s,%s, %s, %s, %s, %s, %s, %s)"""
     data = (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, False, isOwner)
     return insertIntoDB(sqlstatement, data)
 

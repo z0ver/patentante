@@ -1,16 +1,15 @@
-from flask import Flask, redirect, url_for, session, render_template, request, Response
-from flask_login import LoginManager, login_user, current_user, login_required
-from flask_session import Session
-
-import simplejson as json
-from db import *
+import json
 from datetime import datetime
 
+import simplejson as json
+from flask import Flask, redirect, url_for, session, render_template, request, Response
+from flask_login import LoginManager, login_user, login_required
+from flask_session import Session
+
+from db import *
 from model import User
-from config import secret_key
 
 app = Flask(__name__)
-app.secret_key = secret_key
 app.config['SESSION_TYPE'] = 'filesystem'
 
 Session(app)
@@ -18,6 +17,7 @@ Session(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login_page'
+
 
 def response_invalid_request():
     """
@@ -32,6 +32,7 @@ def response_invalid_request():
                     status=400,
                     mimetype="application/json")
 
+
 def response_unauthorized_request():
     """
     Response to an unauthorized request.
@@ -45,6 +46,7 @@ def response_unauthorized_request():
                     status=401,
                     mimetype="application/json")
 
+
 def response_valid_request(data):
     """
     Response to a valid request.
@@ -52,7 +54,7 @@ def response_valid_request(data):
     """
     for row in data:
         for key, value in row.items():
-            if isinstance(value,datetime):
+            if isinstance(value, datetime):
                 row[key] = value.strftime("%Y-%m-%d %H:%M:%S")
     _response = {}
     _response['Success'] = True
@@ -62,13 +64,15 @@ def response_valid_request(data):
                     status=200,
                     mimetype="application/json")
 
-#Main page, ToDo: create main page template
+
+# Main page, ToDo: create main page template
 @app.route('/')
 @login_required
 def index():
     return "Welcome"
 
-#compare the user id with the known sessions
+
+# compare the user id with the known sessions
 @login_manager.user_loader
 def load_user(id):
     if 'users' in session.keys():
@@ -80,23 +84,25 @@ def load_user(id):
         session['users'] = {}
     return id
 
-#Login page for the user
+
+# Login page for the user
 @app.route('/login')
 def login_page():
     return render_template("login_form.html")
 
-#Page where the data entered in the login page gets validated
-#If validation not successful, it moves back to the login page
+
+# Page where the data entered in the login page gets validated
+# If validation not successful, it moves back to the login page
 @app.route('/logged-in', methods=['POST'])
 def loggedin_page():
     username = request.form["username"]
     password = request.form["password"]
-    #ToDo: database check if we know this user and the password is correct
+    # ToDo: database check if we know this user and the password is correct
     if (password == '1234' and username == 'test'):
         session.clear()
         if not 'users' in session.keys():
             session['users'] = {}
-        user = User({"id":0, "name":"Horst"})
+        user = User({"id": 0, "name": "Horst"})
         session['users'][user.id] = user
         login_user(user)
         return redirect(url_for('index'))
@@ -104,7 +110,7 @@ def loggedin_page():
         return redirect(url_for('login_page'))
 
 
-@app.route('/dealer/coupons',methods=['GET','POST'])
+@app.route('/dealer/coupons', methods=['GET', 'POST'])
 def insert_dealer_coupon():
     if request.method == 'POST':
         data = request.get_json()
@@ -113,12 +119,43 @@ def insert_dealer_coupon():
         coupon_value = data.get('value')
         price = data.get('price')
         status = data.get('status')
-        insertCoupon(offer_ID=offer_id, customer_ID=profile_id, original_value=price,current_value=coupon_value,status=status,date_of_purchase=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        return response_valid_request({"couponId":1})
-    elif request.method ==  'GET':
+        insertCoupon(offer_ID=offer_id, customer_ID=profile_id, original_value=price, current_value=coupon_value,
+                     status=status, date_of_purchase=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        return response_valid_request({"couponId": 1})
+    elif request.method == 'GET':
         profile_id = request.args.get('profileId')
         return response_valid_request(getCouponsByUserID(profile_id))
 
+
+@app.route('/dealer/registration_dealer', methods=['POST'])
+def register_dealer():
+    if request.method == 'POST':
+        data = request.get_json()
+        email = data.get('email')
+        firstname = data.get('firstname')
+        lastname = data.get('lastname')
+        phone_number = data.get('phonenumber')
+        password = data.get('password')
+        passwordHash = get_hashed_password(password.encode('utf8'))
+        salt = "empty"  # not used, as well as token can be delted from DB as well
+        result = insertUser(email, firstname, lastname, phone_number, passwordHash, salt, salt, False, True)
+        if result.get('success'):
+            return response_valid_request({"userid": result.get('inserted_row')})  # Todo what to do in case of fail?
+        else:
+            return response_invalid_request()
+
+
+@app.route('/dealer/login', methods=['POST'])
+def login_dealer():
+    if request.method == 'POST':
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+        hash = getUserByMail(email)
+        if check_password(password.encode('utf8'), hash[0].get('passwordHash').encode('utf8')):
+            return response_valid_request({"userid": hash[0].get('user_id')})
+        else:
+            return response_unauthorized_request()
 
 
 if __name__ == '__main__':

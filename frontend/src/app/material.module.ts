@@ -4,7 +4,7 @@ import {
   MatIconModule, MatGridListModule, MatCardModule, MatDialogModule, MatListModule, MatMenuModule, MatTabsModule,
   MatPaginatorModule, MatRadioModule, MatSnackBarModule, MatExpansionModule, MatSortModule, MatTooltipModule, MatChipsModule,
   MatSliderModule, MatStepperModule, MatSelectModule, MatNativeDateModule, MatProgressSpinnerModule, MatProgressBarModule
-} from '@angular/material';
+} from "@angular/material";
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';

@@ -1,16 +1,23 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { MaterialModule } from './material.module';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {MaterialModule} from './material.module';
 
-import { HomeComponent } from './home/home.component';
-import { ShopRegistrationComponent } from './shop-registration/shop-registration.component';
-import { AppComponent } from './app.component';
+import {HomeComponent} from './home/home.component';
+import {ShopRegistrationComponent} from './shop-registration/shop-registration.component';
+import {AppComponent} from './app.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatCardModule} from "@angular/material/card";
+import {ReactiveFormsModule} from "@angular/forms";
+
+import {HttpClientModule} from "@angular/common/http";
 
 const appRoutes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: 'shop-registration', component: ShopRegistrationComponent },
-  { path: '',
+  {path: 'home', component: HomeComponent},
+  {path: 'shop-registration', component: ShopRegistrationComponent},
+  {
+    path: '',
     redirectTo: '/home',
     pathMatch: 'full'
   },
@@ -27,9 +34,15 @@ const appRoutes: Routes = [
       appRoutes
     ),
     BrowserModule,
-    MaterialModule
+    MatFormFieldModule,
+    BrowserAnimationsModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    MaterialModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

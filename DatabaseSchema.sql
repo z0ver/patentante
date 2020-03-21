@@ -13,7 +13,7 @@ CREATE TABLE Users (
 
 CREATE TABLE Shops (
  shop_ID SERIAL PRIMARY KEY,
- owner_email VARCHAR(30) NOT NULL REFERENCES Users(user_id),
+ owner_id VARCHAR(30) NOT NULL REFERENCES Users(user_id),
  name VARCHAR(30) NOT NULL,
  zipCode VARCHAR(10) NOT NULL,
  city VARCHAR(10) NOT NULL,

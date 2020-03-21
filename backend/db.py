@@ -108,3 +108,39 @@ def insertCustomer(emailAddress, firstname, lastname, phoneNumber, passwordHash,
     finally:
         cursor.close()
         connection.close()
+
+
+def updateCouponValue(coupon_id, current_value):
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            sqlstatement = """Update Coupons SET current_value = %s WHERE CouponID = %s"""
+            data = (current_value, coupon_id)
+            cursor.execute(sqlstatement, data)
+            connection.commit()
+            print(cursor.rowcount, "Current value of coupon sucessfully updated")
+
+    except mysql.connector.Error as error:
+        print("Failed to update coupon value {}".format(error))
+    finally:
+        cursor.close()
+        connection.close()
+
+
+def updateCouponStatus(coupon_id, status):
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            sqlstatement = """Update Coupons SET status = %s WHERE CouponID = %s"""
+            data = (status, coupon_id)
+            cursor.execute(sqlstatement, data)
+            connection.commit()
+            print(cursor.rowcount, "Current status of coupon sucessfully updated")
+
+    except mysql.connector.Error as error:
+        print("Failed to update coupon status {}".format(error))
+    finally:
+        cursor.close()
+        connection.close()

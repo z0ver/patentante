@@ -1,5 +1,6 @@
 CREATE TABLE Customers (
- emailAddress VARCHAR(50) PRIMARY KEY,
+ customer_id SERIAL PRIMARY KEY,
+ emailAddress VARCHAR(50) NOT NULL, UNIQUE,
  firstname VARCHAR(30) NOT NULL,
  lastname VARCHAR(30) NOT NULL,
  phoneNumber VARCHAR(30),
@@ -11,8 +12,8 @@ CREATE TABLE Customers (
 );
 
 CREATE TABLE Owners (
- emailAddress VARCHAR(50) PRIMARY KEY,
- firstname VARCHAR(30) NOT NULL,
+ owner_id SERIAL PRIMARY KEY,
+ emailAddress VARCHAR(50) NOT NULL, UNIQUE,
  lastname VARCHAR(30) NOT NULL,
  phoneNumber VARCHAR(30) NOT NULL,
  passwordHash VARCHAR(64) NOT NULL,
@@ -24,7 +25,7 @@ CREATE TABLE Owners (
 
 CREATE TABLE Shops (
  shop_ID SERIAL PRIMARY KEY,
- owner_email VARCHAR(30) NOT NULL REFERENCES Owners(emailAddress),
+ owner_email VARCHAR(30) NOT NULL REFERENCES Owners(owner_id),
  name VARCHAR(30) NOT NULL,
  zipCode VARCHAR(10) NOT NULL,
  city VARCHAR(10) NOT NULL,
@@ -47,7 +48,7 @@ CREATE TABLE coupons (
 CREATE TABLE used_coupons (
  used_coupons_ID SERIAL PRIMARY KEY,
  coupon_ID INT UNSIGNED NOT NULL REFERENCES Coupons(coupon_ID),
- customer_id INT UNSIGNED NOT NULL REFERENCES Customers(emailAddress),
+ customer_id INT UNSIGNED NOT NULL REFERENCES Customers(customer_id),
  original_value DECIMAL(6,4) NOT NULL,
  current_value DECIMAL(6,4) NOT NULL,
  status ENUM('PAYMENT_PENDING','ACTIVATE','USED_UP') NOT NULL,

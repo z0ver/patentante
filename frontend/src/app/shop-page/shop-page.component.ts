@@ -28,5 +28,6 @@ export class ShopPageComponent implements OnInit {
 
   onHelpButtonClick(buttonContent: HelpButtonContent) {
     console.log(buttonContent);
+    //todo go to deal page
   }
 }

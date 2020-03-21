@@ -5,10 +5,10 @@ import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-dealer-settings',
-  templateUrl: './dealer-settings.component.html',
-  styleUrls: ['./dealer-settings.component.css']
+  templateUrl: './shop-settings.component.html',
+  styleUrls: ['./shop-settings.component.css']
 })
-export class DealerSettingsComponent implements OnInit {
+export class ShopSettingsComponent implements OnInit {
 
   @Input()
   private userId: string;

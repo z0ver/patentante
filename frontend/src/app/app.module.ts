@@ -12,16 +12,18 @@ import {MatCardModule} from "@angular/material/card";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {HttpClientModule} from "@angular/common/http";
-import {DealerSettingsComponent} from './dealer-settings/dealer-settings.component';
+import {ShopSettingsComponent} from './shop-settings/shop-settings.component';
 import {ShopPageComponent} from './shop-page/shop-page.component';
 import { HelpButtonComponent } from './shop-page/help-button/help-button.component';
 import {MatRippleModule} from "@angular/material/core";
+import { AidBaseComponent } from './aid-base/aid-base.component';
 
 const appRoutes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'shop-registration', component: ShopRegistrationComponent},
-  {path: 'dealer-settings', component: DealerSettingsComponent},
+  {path: 'shop-settings', component: ShopSettingsComponent},
   {path: 'shop-page', component: ShopPageComponent},
+  {path: 'aid', component: AidBaseComponent},
   {
     path: '',
     redirectTo: '/home',
@@ -34,9 +36,10 @@ const appRoutes: Routes = [
     AppComponent,
     HomeComponent,
     ShopRegistrationComponent,
-    DealerSettingsComponent,
+    ShopSettingsComponent,
     ShopPageComponent,
-    HelpButtonComponent
+    HelpButtonComponent,
+    AidBaseComponent
   ],
   imports: [
     RouterModule.forRoot(

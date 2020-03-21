@@ -100,16 +100,20 @@ def loggedin_page():
         return redirect(url_for('login_page'))
 
 
-@app.route('/customer/coupons',methods=['POST'])
-def insert_customer_coupon():
-    data = request.get_json()
-    profile_id = data.get('profileId')
-    offer_id = data.get('offerId')
-    coupon_value = data.get('value')
-    price = data.get('price')
-    description = data.get('description')
-    insertCoupon(offer_ID=offer_id, customer_ID=profile_id, original_value=0,current_value=20,status="valid",date_of_purchase=datetime.now().strftime("%d.%m.%Y %H:%M:%S"))
-    return {"success":True,"couponId":1}
+@app.route('/dealer/coupons',methods=['GET','POST'])
+def insert_dealer_coupon():
+    if request.method == 'POST':
+        data = request.get_json()
+        profile_id = data.get('profileId')
+        offer_id = data.get('offerId')
+        coupon_value = data.get('value')
+        price = data.get('price')
+        status = data.get('status')
+        insertCoupon(offer_ID=offer_id, customer_ID=profile_id, original_value=price,current_value=coupon_value,status=status,date_of_purchase=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        return response_valid_request({"couponId":1})
+    elif request.method ==  'GET':
+        profile_id = request.args.get('profileId')
+        #ToDo: After commit of the rest of the database functions
 
 
 

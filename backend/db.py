@@ -385,3 +385,18 @@ def deleteCustomer(user_ID):
         cursor.close()
         connection.close()
     return {'success':deletion_done}
+    
+def getCouponDetails(coupon_id):
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            sqlstatement = """SELECT * FROM Coupons WHERE coupon_ID=%s"""
+            cursor.execute(sqlstatement, (coupon_id,))
+            records = cursor.fetchall()
+    except mysql.connector.Error as error:
+        print("Failed to read data from Offers {}".format(error))
+    finally:
+        cursor.close()
+        connection.close()
+        return records  # how to handle empty return?    

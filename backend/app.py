@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for, session, render_template, request, R
 from flask_login import LoginManager, login_user, current_user, login_required
 from flask_session import Session
 import logging
+import json
 
 from model import User
 from config import secret_key

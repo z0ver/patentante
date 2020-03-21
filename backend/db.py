@@ -110,6 +110,90 @@ def insertUser(emailAddress, firstname, lastname, phoneNumber, passwordHash, pas
         cursor.close()
         connection.close()
 
+def verifyUser(token):
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            sqlstatement = """UPDATE Users SET isVerified = true WHERE token = %s"""
+            cursor.execute(sqlstatement, (token,))
+            connection.commit()
+            print(cursor.rowcount, "User successfully verified.")
+
+    except mysql.connector.Error as error:
+        print("Failed to verify customer {}".format(error))
+    finally:
+        cursor.close()
+        connection.close()
+
+def createOfferFixedValue(shop_ID, offerType, name, description, value) :
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            sqlstatement = """INSERT INTO Offers(shop_ID, offerType, name, description, value) 
+                              VALUES (%s,%s,%s,%s,%s)"""
+            data = (shop_ID, offerType, name, description, value)
+            cursor.execute(sqlstatement, data)
+            connection.commit()
+            print(cursor.rowcount, "Offer with fixed value successfully created.")
+
+    except mysql.connector.Error as error:
+        print("Failed to create offer {}".format(error))
+    finally:
+        cursor.close()
+        connection.close()
+
+def createOfferVariableValue(shop_ID, offerType, name, description) :
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            sqlstatement = """INSERT INTO Offers(shop_ID, offerType, name, description) 
+                              VALUES (%s,%s,%s,%s,%s)"""
+            data = (shop_ID, offerType, name, description)
+            cursor.execute(sqlstatement, data)
+            connection.commit()
+            print(cursor.rowcount, "Offer with variable value successfully created.")
+
+    except mysql.connector.Error as error:
+        print("Failed to create offer {}".format(error))
+    finally:
+        cursor.close()
+        connection.close()
+
+def deleteOffer(offer_ID) :
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            sqlstatement = """DELETE FROM Offers WHERE offer_ID = %s"""
+            cursor.execute(sqlstatement, (offer_ID,))
+            connection.commit()
+            print(cursor.rowcount, "Offer successfully deleted.")
+
+    except mysql.connector.Error as error:
+        print("Failed to delete offer {}".format(error))
+    finally:
+        cursor.close()
+        connection.close()
+
+def updateOfferDetail(offer_ID, detail_column, newValue) :
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            sqlstatement = """UPDATE Offers SET %s = %s WHERE offer_ID = %s"""
+            data = (detail_column, newValue, offer_ID)
+            cursor.execute(sqlstatement, data)
+            connection.commit()
+            print(cursor.rowcount, "Offer successfully updated.")
+
+    except mysql.connector.Error as error:
+        print("Failed to update offer {}".format(error))
+    finally:
+        cursor.close()
+        connection.close()
 
 def updateCouponValue(coupon_id, current_value):
     try:

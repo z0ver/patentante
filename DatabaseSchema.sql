@@ -7,7 +7,6 @@ CREATE TABLE Users (
  passwordHash VARCHAR(64) NOT NULL,
  passwordSalt VARCHAR(64) NOT NULL,
  token VARCHAR(64) NOT NULL,
- sessionKey VARCHAR(64) NOT NULL,
  isVerified BOOLEAN NOT NULL,
  isOwner BOOLEAN NOT NULL
 );

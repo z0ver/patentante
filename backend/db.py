@@ -51,12 +51,24 @@ def getAllCustomerQuery():
             sqlstatement = """SELECT * FROM Customers"""
             cursor.execute(sqlstatement)
             records = cursor.fetchall()
-            for row in records:
-                print(row)
-                # do sth
-                pass
     except mysql.connector.Error as error:
-        print("Failed to read all data from customers {}".format(error))
+        print("Failed to read data from customers {}".format(error))
+    finally:
+        cursor.close()
+        connection.close()
+        return records  # how to handle empty return?
+
+
+def getShopsByZipCode(zipCode):
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            sqlstatement = """SELECT * FROM Shops WHERE zipCode=%s"""
+            cursor.execute(sqlstatement, (zipCode,))
+            records = cursor.fetchall()
+    except mysql.connector.Error as error:
+        print("Failed to read data from Shops {}".format(error))
     finally:
         cursor.close()
         connection.close()
@@ -73,7 +85,7 @@ def insertCustomer(emailAddress, firstname, lastname, phoneNumber, passwordHash,
             data = (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified)
             cursor.execute(sqlstatement, data)
             connection.commit()
-            print("Record inserted successfully into Laptop table")
+            print(cursor.rowcount, "Record inserted successfully into Customer table")
 
     except mysql.connector.Error as error:
         print("Failed to insert customer {}".format(error))
@@ -86,3 +98,4 @@ getServerInformation()
 getAllCustomerQuery()
 insertCustomer("paprikator", "Paprika", "Terminator", "+666", "Hash", "pepper", "p4pr1k4", "1")
 getAllCustomerQuery()
+print(getShopsByZipCode(92224))

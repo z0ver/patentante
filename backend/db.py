@@ -231,7 +231,7 @@ def updateCouponStatus(coupon_id, status):
         connection.close()
 
 
-def insertCouponForCustomer(offer_ID, customer_ID, original_value, current_value, status, date_of_purchase):
+def insertCoupon(offer_ID, customer_ID, original_value, current_value, status, date_of_purchase):
     try:
         connection = getDbConnection()
         if connection.is_connected():

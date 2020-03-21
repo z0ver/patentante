@@ -3,6 +3,8 @@ from flask_login import LoginManager, login_user, current_user, login_required
 from flask_session import Session
 import logging
 import json
+from db import *
+from datetime import datetime
 
 from model import User
 from config import secret_key
@@ -96,6 +98,19 @@ def loggedin_page():
         return redirect(url_for('index'))
     else:
         return redirect(url_for('login_page'))
+
+
+@app.route('/customer/coupons',methods=['POST'])
+def insert_customer_coupon():
+    data = request.get_json()
+    profile_id = data.get('profileId')
+    offer_id = data.get('offerId')
+    coupon_value = data.get('value')
+    price = data.get('price')
+    description = data.get('description')
+    insertCoupon(offer_ID=offer_id, customer_ID=profile_id, original_value=0,current_value=20,status="valid",date_of_purchase=datetime.now().strftime("%d.%m.%Y %H:%M:%S"))
+    return {"success":True,"couponId":1}
+
 
 
 if __name__ == '__main__':

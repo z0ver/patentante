@@ -21,6 +21,7 @@ docs/_build/
 backend/.DS_Store
 backend/.env
 backend/.flaskenv
+backend/flask_session
 backend/*.pyc
 backend/*.pyo
 backend/env/

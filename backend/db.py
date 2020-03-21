@@ -166,7 +166,7 @@ def updateShowDetails(shop_ID,field_name,field_value):
             connection.commit()
             print(cursor.rowcount, "Record(s) updated successfully in Shops table")
     except mysql.connector.Error as error:
-        print("Failed ot update shop {}".format(error))
+        print("Failed to update shop {}".format(error))
     finally:
         cursor.close()
         connection.close()
@@ -188,7 +188,7 @@ def deleteShop(shop_ID):
             print(cursor.rowcount, "Record deleted successfully in Shops table")
             deletion_done = True
     except mysql.connector.Error as error:
-        print("Failed ot update shop {}".format(error))
+        print("Failed to delete shop {}".format(error))
     finally:
         cursor.close()
         connection.close()

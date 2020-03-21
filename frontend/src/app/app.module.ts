@@ -12,13 +12,16 @@ import {MatCardModule} from "@angular/material/card";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {HttpClientModule} from "@angular/common/http";
-import { DealerSettingsComponent } from './dealer-settings/dealer-settings.component';
-import { DealerComponent } from './dealer/dealer/dealer.component';
+import {DealerSettingsComponent} from './dealer-settings/dealer-settings.component';
+import {ShopPageComponent} from './shop-page/shop-page.component';
+import { HelpButtonComponent } from './shop-page/help-button/help-button.component';
+import {MatRippleModule} from "@angular/material/core";
 
 const appRoutes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'shop-registration', component: ShopRegistrationComponent},
   {path: 'dealer-settings', component: DealerSettingsComponent},
+  {path: 'shop-page', component: ShopPageComponent},
   {
     path: '',
     redirectTo: '/home',
@@ -32,7 +35,8 @@ const appRoutes: Routes = [
     HomeComponent,
     ShopRegistrationComponent,
     DealerSettingsComponent,
-    DealerComponent
+    ShopPageComponent,
+    HelpButtonComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -45,7 +49,8 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     MaterialModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    MatRippleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,18 @@
+<mat-card class="box">
+  <h1>{{shop.short_description.name}}</h1>
+  <h3>{{shop.short_description.short_information}}</h3>
+
+  <mat-card class="inner-box">
+    <h2>Kontaktdaten</h2>
+    Adresse: {{shop.address.place}}, {{shop.address.postcode}}
+    <br>
+    Telefon: {{shop.address.tel_num}}
+
+    <h2>Öffnungszeiten</h2>
+  </mat-card>
+  <br>
+  <h2>Wie kann ich helfen?</h2>
+  <div *ngFor="let buttonContent of buttons" (click)="onHelpButtonClick(buttonContent)" class="help-container">
+    <app-help-button [buttonContent]="buttonContent"></app-help-button>
+  </div>
+</mat-card>

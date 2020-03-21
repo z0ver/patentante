@@ -1,0 +1,14 @@
+mat-card {
+  margin-inside: 6px;
+  /*width: min-content;*/
+  max-width: 30%;
+  text-align: center;
+
+  /* make text of button not selectable */
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+}

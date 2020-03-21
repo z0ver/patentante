@@ -4,3 +4,4 @@ flask-session
 Werkzeug==0.16.0
 mysql-connector-python
 simplejson
+bcrypt

@@ -49,7 +49,7 @@ def getQuery():
         if connection.is_connected():
             try:
                 cursor = connection.cursor()
-                sqlstatement = """SELECT * FROM coupons"""
+                sqlstatement = """SELECT * FROM Customers"""
                 cursor.execute(sqlstatement)
                 records = cursor.fetchall()
                 for row in records:

@@ -86,9 +86,10 @@ def getDataFromDB(sqlstatement, arguments):
 
             data = cursor.fetchall()
             column_names = [one_column[0] for one_column in cursor.description]
+            #Put database result in easily usable dict schema
             for row in data:
                 record = {}
-                for column_index in range(0, len(column_names) - 1):
+                for column_index in range(0, len(column_names)):
                     record[column_names[column_index]] = row[column_index]
                 records.append(record)
     except mysql.connector.Error as error:

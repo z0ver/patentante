@@ -1,0 +1,26 @@
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.example-margin {
+  margin: 20px;
+}
+
+.box {
+  margin: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+#map{
+  height: 300px;
+  width: 100%;
+}

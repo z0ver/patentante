@@ -1,2 +1,44 @@
-<p>home works!</p>
-<a routerLink="/shop-registration" routerLinkActive="active">shop-registration</a>
+<div class="container">
+  <mat-card class="box" layout-align="center center">
+    <mat-card-header layout-align="center center">
+      <mat-card-title>Geben Sie Ihre Postleitzahl an</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="container" fxLayout="column" fxLayoutAlign="center">
+        <div>
+          <mat-form-field class="example-full-width">
+            <input matInput placeholder="Postleitzahl" value="{{postCode}}" (change)="postCodeChange($event)">
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-checkbox class="example-margin" [checked]="mapShown" (change)="valueChange(false,$event)">
+            <label>Karte anzeigen</label>
+          </mat-checkbox>
+          <mat-checkbox class="example-margin" [checked]="listShown" (change)="valueChange(true,$event)">
+            <label>List anzeigen</label>
+          </mat-checkbox>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card [ngClass]="(mapShown)?'box':'hidden'" layout-align="center center">
+    <mat-card-header layout-align="center center">
+      <mat-card-title>Karte</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div id="map"></div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card *ngIf="listShown" class="box" layout-align="center center">
+    <mat-card-header layout-align="center center">
+      <mat-card-title>Liste</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div *ngFor="let place of places">
+        {{place}}
+      </div>
+      <div>{{currentTown}}</div>
+    </mat-card-content>
+  </mat-card>
+</div>
+<!--<a routerLink="/shop-registration" routerLinkActive="active">shop-registration</a>-->

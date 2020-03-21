@@ -104,8 +104,9 @@ def loggedin_page():
         return redirect(url_for('login_page'))
 
 
+#Get or create coupons for the dealer
 @app.route('/dealer/coupons',methods=['GET','POST'])
-def insert_dealer_coupon():
+def dealer_coupon():
     if request.method == 'POST':
         data = request.get_json()
         profile_id = data.get('profileId')
@@ -118,6 +119,22 @@ def insert_dealer_coupon():
     elif request.method ==  'GET':
         profile_id = request.args.get('profileId')
         return response_valid_request(getCouponsByUserID(profile_id))
+
+#Get all coupons for the dealer which are already used up
+@app.route('/dealer/used_coupons',methods=['GET'])
+def dealer_coupon_used():
+    profile_id = request.args.get('profileId')
+    return response_valid_request(getUsedCouponsByUserID(profile_id))
+
+#Update value and potentially devalue it
+@app.route('/dealer/devalue_coupon',methods=['PUT'])
+def dealer_devalue_coupon():
+    data = request.get_json()
+    used_coupon_id = data.get('used_couponId')
+    new_value = data.get('new_value')
+    activated = data.get('activated')
+    return response_valid_request(updateCouponValue(used_coupon_id,new_value,activated))
+
 
 
 

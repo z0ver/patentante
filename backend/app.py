@@ -50,8 +50,15 @@ def response_valid_request(data):
     Response to a valid request.
     :return: JSON wthat contains the input data
     """
+    #this area converts datetime values from python to strings so they are serializable
     for row in data:
         for key, value in row.items():
+            if isinstance(value,list):
+                for list_index, list_value in enumerate(value):
+                    if isinstance(list_value, dict):
+                        for list_item_key, list_item_value in list_value.items():
+                            if isinstance(list_item_value, datetime):
+                                row[key][list_index][list_item_key] = list_item_value.strftime("%Y-%m-%d %H:%M:%S")
             if isinstance(value,datetime):
                 row[key] = value.strftime("%Y-%m-%d %H:%M:%S")
     _response = {}
@@ -135,8 +142,22 @@ def dealer_devalue_coupon():
     activated = data.get('activated')
     return response_valid_request(updateCouponValue(used_coupon_id,new_value,activated))
 
-
-
+#Get all dealers for a specific PLZ
+@app.route('/customer/list_dealers',methods=['GET'])
+def get_dealers_by_zip():
+    plz = request.args.get('plz')
+    database_responses = getShopsByZipCode(plz)
+    final_response = [{
+        "profileId": database_response.get("owner_id"),
+        "address'":{
+            "postcode": database_response.get("zipCode"),
+            "place": database_response.get("street")+" "+database_response.get("city"),
+            "number": database_response.get("phoneNumber")
+        },
+        "description": database_response.get("description"),
+        "coupons": getCouponsByUserID(database_response.get("owner_id"))
+    } for database_response in database_responses]
+    return response_valid_request(final_response)
 
 if __name__ == '__main__':
     app.run()

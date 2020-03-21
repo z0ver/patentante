@@ -24,3 +24,21 @@
   height: 300px;
   width: 100%;
 }
+
+.shop-container {
+  border:1px solid black;
+  height: 40px;
+  padding: 10px;
+}
+
+.shop-content-container {
+  display: flex;
+}
+
+.shop-label {
+  flex: 1
+}
+
+.shop-content {
+  flex: 7
+}

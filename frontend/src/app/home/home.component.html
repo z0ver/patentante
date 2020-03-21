@@ -23,7 +23,7 @@
   </mat-card>
   <mat-card [ngClass]="(mapShown)?'box':'hidden'" layout-align="center center">
     <mat-card-header layout-align="center center">
-      <mat-card-title>Karte</mat-card-title>
+      <mat-card-title>Karte {{currentTown}}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <div id="map"></div>
@@ -34,10 +34,16 @@
       <mat-card-title>Liste</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <div *ngFor="let place of places">
-        {{place}}
+      <div class="shop-container" *ngFor="let place of places">
+        <div class="shop-content-container" (click)="shopClicked()">
+          <label class="shop-label">Name</label>
+          <label class="shop-content">{{place.short_description.name}}</label>
+        </div>
+        <div class="shop-content-container">
+          <label class="shop-label">Beschreibung</label>
+          <label class="shop-content">{{place.short_description.short_information}}</label>
+        </div>
       </div>
-      <div>{{currentTown}}</div>
     </mat-card-content>
   </mat-card>
 </div>

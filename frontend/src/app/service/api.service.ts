@@ -24,5 +24,11 @@ export class ApiService {
     return this.registerDealer(email, password)
   }
 
+  getPostCodeCSV() {
+    return this.http.get('assets/PLZ.csv', {responseType: 'text'})
+  }
 
+  getShops(lat, long, postCode) {
+    return this.http.get(`${this.url}/customer/shops?lat=${lat}&long=${long}&postCode=${postCode}`)
+  }
 }

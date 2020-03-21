@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import {HttpClient, HttpEvent, HttpHeaders} from '@angular/common/http';
+import { ApiService } from '../service/api.service';
 declare let L;
 
 @Component({
@@ -9,8 +10,10 @@ declare let L;
 })
 export class HomeComponent implements OnInit, AfterViewInit {
 
-  public postCode = "";
-  public places = ["hallo"];
+  postCode = "";
+  lat = "";
+  long = "";
+  places = [];
 
   currentTown = "";
   geolocationPosition;
@@ -21,11 +24,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
   postCodeMap;
   map;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private apiService: ApiService) {
   }
 
   ngOnInit() {
-    this.http.get('assets/PLZ.csv', {responseType: 'text'})
+    this.apiService.getPostCodeCSV()
     .subscribe(
         data => {
             let splitData = data.split("\n")
@@ -65,9 +68,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
         window.navigator.geolocation.getCurrentPosition(
             position => {
                 this.geolocationPosition = position
+                this.lat = this.geolocationPosition.coords.latitude
+                this.long = this.geolocationPosition.coords.longitude
                 this.map.panTo(new L.LatLng(this.geolocationPosition.coords.latitude, this.geolocationPosition.coords.longitude));
 
-                // TODO Request to places
+                this.requestShops()
             },
             error => {
                 switch (error.code) {
@@ -103,9 +108,60 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.currentTown = this.postCodeMap[postCode] != undefined ? this.postCodeMap[postCode].town : this.currentTown
 
     if (this.postCodeMap[postCode].lat != undefined && this.postCodeMap[postCode].long != undefined) {
+      this.lat = this.postCodeMap[postCode].lat
+      this.long = this.postCodeMap[postCode].long
       this.map.panTo(new L.LatLng(this.postCodeMap[postCode].lat, this.postCodeMap[postCode].long));
 
-      // TODO Request to places
+      this.requestShops()
     }
+  }
+
+  shopClicked() {
+    console.log("go to shop")
+  }
+
+  requestShops() {
+    this.apiService.getShops(this.lat, this.long, this.postCode).subscribe(
+      data => {
+        //this.places = data
+      },
+      error => {
+
+        // this code shoud be in succes case
+        this.places = [{
+            "shopID": "shopID",
+            "address": {
+              "postCode": "04317",
+              "place": "Prager Straße",
+              "number": "10",
+            },
+            "short_description": {
+              "name": "Mein Shop",
+              "logo": "LogoURL",
+              "short_information": "Wir sind ein schöner Laden",
+            },
+            "description": {
+              "long_information": "Wir sind ein schöner Laden"
+            }
+        }]
+
+        // should add a marker forEach place
+        this.places.forEach((place) => {
+          // should be right lat, long
+          let marker = L.marker([this.lat, this.long]).addTo(this.map);
+          marker.bindPopup(place.short_description.name);
+          marker.on('mouseover', function (e) {
+              this.openPopup();
+          });
+          marker.on('mouseout', function (e) {
+              this.closePopup();
+          });
+          marker.on('click', function (e) {
+            console.log("click")
+          });
+          this.map.addLayer(marker);
+        })
+      }
+    )
   }
 }

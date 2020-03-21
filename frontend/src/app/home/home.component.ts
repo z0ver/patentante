@@ -101,7 +101,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (postCode.charAt(0) === '0') {
       postCode = postCode.substr(1);
     }
-    this.currentTown = this.postCodeMap[postCode].town
-    this.map.panTo(new L.LatLng(this.postCodeMap[postCode].lat, this.postCodeMap[postCode].long));
+    this.currentTown = this.postCodeMap[postCode] != undefined ? this.postCodeMap[postCode].town : this.currentTown
+
+    if (this.postCodeMap[postCode].lat != undefined && this.postCodeMap[postCode].long != undefined) {
+      this.map.panTo(new L.LatLng(this.postCodeMap[postCode].lat, this.postCodeMap[postCode].long));
+    }
   }
 }

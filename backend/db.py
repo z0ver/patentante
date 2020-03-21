@@ -249,6 +249,55 @@ def deleteCoupon(coupon_ID):
         connection.close()
     return {'success': deletion_done}
 
+def deleteOwner(user_ID):
+    deletion_done = False
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            #First, check if the user is an owner
+            data = (user_ID)
+            sqlstatement = """SELECT isOwner FROM users WHERE user_id = %s"""
+            cursor.execute(sqlstatement, data)
+            result_data = cursor.fetchall()
+            if result_data: #check if result is not empty
+                if 'isOwner' in result_data[0].keys(): #check if the wanted field is present
+                    if int(result_data[0]['isOwner'])==1:
+                        sqlstatement = """DELETE FROM users WHERE user_id = %s"""
+                        cursor.execute(sqlstatement, data)
+                        connection.commit()
+                        print(cursor.rowcount, "Owner deleted successfully in Users table")
+                        deletion_done = True
+    except mysql.connector.Error as error:
+        print("Failed to delete owner {}".format(error))
+    finally:
+        cursor.close()
+        connection.close()
+    return {'success':deletion_done}
 
 
-
+def deleteCustomer(user_ID):
+    deletion_done = False
+    try:
+        connection = getDbConnection()
+        if connection.is_connected():
+            cursor = connection.cursor()
+            #First, check if the user is a customer
+            data = (user_ID)
+            sqlstatement = """SELECT isOwner FROM users WHERE user_id = %s"""
+            cursor.execute(sqlstatement, data)
+            result_data = cursor.fetchall()
+            if result_data: #check if result is not empty
+                if 'isOwner' in result_data[0].keys(): #check if the wanted field is present
+                    if int(result_data[0]['isOwner'])==0:
+                        sqlstatement = """DELETE FROM users WHERE user_id = %s"""
+                        cursor.execute(sqlstatement, data)
+                        connection.commit()
+                        print(cursor.rowcount, "Customer deleted successfully in Users table")
+                        deletion_done = True
+    except mysql.connector.Error as error:
+        print("Failed to delete user {}".format(error))
+    finally:
+        cursor.close()
+        connection.close()
+    return {'success':deletion_done}

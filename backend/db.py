@@ -1,9 +1,9 @@
 # this file contains all functionality necessary to connect to the database
 import mysql.connector
-
-host = "localhost"
-user = "root"
-passwd = "A1!n3_578"  # extract as env variable
+#Get Database connection details from app configuration
+from config import db_host as host
+from config import db_user as user
+from config import db_passwd as passwd
 
 
 def getDbConnection():

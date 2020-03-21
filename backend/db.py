@@ -9,7 +9,7 @@ passwd = "A1!n3_578"
 def getDbConnection():
     # Get database connection
     try:
-        connection = mysql.connector.connect(host=host, user=user, passwd=passwd, charset="utf8")
+        connection = mysql.connector.connect(host=host, user=user, passwd=passwd,  charset="utf8")
         return connection
     except mysql.connector.Error as error:
         print("Failed to connect to database {}".format(error))
@@ -32,7 +32,7 @@ def getServerInformation():
             print("Connected to MySQL database... MySQL Server version is ", db_Info)
             cursor = connection.cursor()
             cursor.execute("select database();")
-            record = cursor.fetchone()
+            record = cursor.fetchall()
             print("Your connected to - ", record)
             cursor.close()
 
@@ -43,14 +43,14 @@ def getServerInformation():
         connection.close()
 
 
-def getQuery(connection, anyinformation):
+def getQuery():
     try:
         connection = getDbConnection()
         if connection.is_connected():
             try:
                 cursor = connection.cursor()
-                sqlstatement = """SELECT * FROM auftrag WHERE col3 ='%s'"""
-                cursor.execute(sqlstatement, (anyinformation,))
+                sqlstatement = """SELECT * FROM coupons"""
+                cursor.execute(sqlstatement)
                 records = cursor.fetchall()
                 for row in records:
                     print(row)
@@ -63,3 +63,6 @@ def getQuery(connection, anyinformation):
         print("Failed to read database version {}".format(error))
     finally:
         connection.close()
+
+getServerInformation()
+getQuery()

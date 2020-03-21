@@ -12,6 +12,7 @@ import {MatCardModule} from "@angular/material/card";
 import {ReactiveFormsModule} from "@angular/forms";
 
 import {HttpClientModule} from "@angular/common/http";
+import { DealerComponent } from './dealer/dealer/dealer.component';
 
 const appRoutes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -27,7 +28,8 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     HomeComponent,
-    ShopRegistrationComponent
+    ShopRegistrationComponent,
+    DealerComponent
   ],
   imports: [
     RouterModule.forRoot(

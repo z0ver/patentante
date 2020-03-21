@@ -1,0 +1,15 @@
+.container-wide {
+  width: 100%;
+}
+
+.container-bigger {
+  width: 80%;
+}
+
+.container-smaller {
+  width: 20%;
+}
+
+.box {
+  margin: 10px;
+}

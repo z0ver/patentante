@@ -1,0 +1,48 @@
+<div>
+  <mat-card class="box" layout-align="center center">
+    <h2>Kontaktdaten</h2>
+
+    <mat-form-field appearance="fill" class="container-wide">
+      <mat-label>Firmenname</mat-label>
+      <input matInput [(ngModel)]="profile.short_description.name">
+    </mat-form-field>
+    <br>
+
+    <mat-form-field appearance="fill" class="container-wide">
+      <mat-label>Inhaber</mat-label>
+      <input matInput [(ngModel)]="profile.owner">
+    </mat-form-field>
+    <br>
+
+    <mat-form-field appearance="fill" class="container-bigger">
+      <mat-label>Straße</mat-label>
+      <input matInput [(ngModel)]="profile.address.place">
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="container-smaller">
+      <mat-label>Hausnummer</mat-label>
+      <input matInput [(ngModel)]="profile.address.postcode">
+    </mat-form-field>
+    <br>
+
+    <mat-form-field appearance="fill" class="container-wide">
+      <mat-label>Telefonnummer</mat-label>
+      <input matInput [(ngModel)]="profile.address.tel_num">
+    </mat-form-field>
+    <br>
+
+    <mat-form-field appearance="fill" class="container-wide">
+      <mat-label>E-Mail-Adresse</mat-label>
+      <input matInput [(ngModel)]="profile.address.email" type="email">
+    </mat-form-field>
+    <br>
+
+    <mat-form-field appearance="fill" class="container-wide">
+      <mat-label>Kurzbeschreibung (250 Zeichen)</mat-label>
+      <textarea matInput placeholder="Z.b.Wir sind ein seit 100 Jahren..."
+                [(ngModel)]="profile.short_description.short_information"></textarea>
+    </mat-form-field>
+
+    <br>
+    <button mat-raised-button color="primary" (click)="onSaveClick()" type="submit">Änderungen speichern</button>
+  </mat-card>
+</div>

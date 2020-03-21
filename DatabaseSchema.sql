@@ -36,18 +36,18 @@ CREATE TABLE Shops (
  phoneNumber VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE coupons (
- coupon_ID SERIAL PRIMARY KEY REFERENCES Coupons(coupon_ID),
+CREATE TABLE Offers (
+ offer_ID SERIAL PRIMARY KEY,
  shop_ID INT UNSIGNED NOT NULL REFERENCES Shops(shop_ID),
- couponType ENUM('DONATION', 'VALUE', 'PRODUCT') NOT NULL,
+ offerType ENUM('DONATION', 'VALUE', 'PRODUCT') NOT NULL,
  name VARCHAR(50) NOT NULL,
  description VARCHAR(50) NOT NULL,
  value DECIMAL(6,4)
 );
 
-CREATE TABLE used_coupons (
- used_coupons_ID SERIAL PRIMARY KEY,
- coupon_ID INT UNSIGNED NOT NULL REFERENCES Coupons(coupon_ID),
+CREATE TABLE Coupons (
+ coupons_ID SERIAL PRIMARY KEY,
+ offer_ID INT UNSIGNED NOT NULL REFERENCES Offers(offer_ID),
  customer_id INT UNSIGNED NOT NULL REFERENCES Customers(customer_id),
  original_value DECIMAL(6,4) NOT NULL,
  current_value DECIMAL(6,4) NOT NULL,

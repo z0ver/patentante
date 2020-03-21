@@ -51,10 +51,9 @@ def response_valid_request(data):
     :return: JSON wthat contains the input data
     """
     for row in data:
-        if isinstance(row,dict):
-            for key, value in row.items():
-                if isinstance(value,datetime):
-                    row[key] = value.strftime("%Y-%m-%d %H:%M:%S")
+        for key, value in row.items():
+            if isinstance(value,datetime):
+                row[key] = value.strftime("%Y-%m-%d %H:%M:%S")
     _response = {}
     _response['Success'] = True
     _response['Status'] = 200

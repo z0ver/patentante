@@ -1,12 +1,16 @@
 from datetime import datetime
 
 import simplejson as json
-from flask import Flask, request, Response
+from flask import Flask, redirect, url_for, session, render_template, request, Response
+from flask_login import LoginManager, login_user, login_required
+from flask_session import Session
+from flask_cors import CORS
 
 from config import secret_key
 from db import *
 
 app = Flask(__name__)
+CORS(app)
 app.secret_key = secret_key
 app.config['SESSION_TYPE'] = 'filesystem'
 

@@ -118,8 +118,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public shopClicked() {
-    this.router.navigate(['shop-page'])
+  public shopClicked(place) {
+    this.router.navigateByUrl('/shop-page', { state: place });
     console.log("go to shop")
   }
 
@@ -167,7 +167,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           });
           marker.on('click', function (e) {
             console.log("click")
-            that.shopClicked()
+            that.shopClicked(place)
           })
           this.markers.push(marker)
           this.map.addLayer(marker);

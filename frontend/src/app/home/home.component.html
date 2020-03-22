@@ -38,7 +38,7 @@
     </mat-card-header>
     <mat-card-content>
       <div class="shop-container" *ngFor="let place of places">
-        <div class="shop-content-container" (click)="shopClicked()">
+        <div class="shop-content-container" (click)="shopClicked(place)">
           <label class="shop-label">Name</label>
           <label class="shop-content">{{place.short_description.name}}</label>
         </div>

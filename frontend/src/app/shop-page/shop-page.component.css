@@ -5,3 +5,8 @@
 .help-container {
   display: flex;
 }
+
+.flex {
+  display: flex;
+  justify-content: center;
+}

@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {DealerProfile} from "../model/dealer-profile";
 import {HelpButtonContent} from "./help-button/help-button-content";
+import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 
 @Component({
   selector: 'app-shop-page',
@@ -12,13 +13,17 @@ export class ShopPageComponent implements OnInit {
   shop: DealerProfile = new DealerProfile();
   buttons: Array<HelpButtonContent> = new Array<HelpButtonContent>();
 
-  constructor() { }
+  constructor(private router:Router, private activatedRoute:ActivatedRoute) {
+    const place = this.router.getCurrentNavigation().extras.state
+
+    this.shop.short_description.name = place.short_description.name
+    this.shop.short_description.short_information = place.short_description.short_information
+    this.shop.address.place = place.address.place
+    this.shop.address.postcode = place.address.postcode
+  }
 
   ngOnInit(): void {
     //todo remove mock shit
-    this.shop.short_description.name = "Italiener \"Da Vinci\"";
-    this.shop.short_description.short_information = "Familiengefuehrtes Unternehmen seit 1978";
-
     const mockButton = new HelpButtonContent();
     mockButton.header = "Gutschein";
     mockButton.description = "Ich moechte einen Sach- oder Geldwert-Gutschein erwerben";

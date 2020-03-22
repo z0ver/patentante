@@ -1,7 +1,9 @@
 # Backend
 ## General
 The backend is built using the Python Flask framework. 
+
 The app.py file is the main application and contains all API endpoints.
+
 The db.py file contains all database requests and is intended to be called by the funtions in the app.py
 
 ## How to use (recommendation)

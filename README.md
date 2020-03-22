@@ -5,7 +5,7 @@ The long term description of the project is given on the provided link (German).
 
 The goal of this project is that local shop owners can be supported financially by their customers, even if they had to close their shop.
 Our intent is that shops with few digital experience and money can register and provide their offers so customers can buy something and use it later.
-The goal for our team is that with this project, customers can become a general sponsor of theie loxL AHOPA and long-term support them.
+The goal for our team is that with this project, customers can become a general sponsor of their local shops and can also support them on the long-term.
 
 ## More detailed info
 The details to frontend and backend are in a separate README.md in the corresponding folder.
@@ -48,8 +48,7 @@ After starting the Flask app, make sure it runs on port 5000 to match the specif
 Recommendation for Windows: Download [GIT Bash](https://git-scm.com/downloads)
 1. Install [Node.js](https://nodejs.org/en/)
 1. Run `npm install @angular/cli -g`
-1. In the terminal, navigate to the frontend folder and run `npm i`
-1. Run npm i to install the requirements
+1. In the terminal, navigate to the frontend folder and run `npm i` to install the requirements
 1. Run ng serve to start the frontend
 
-At the end of those steps, a Frontend should be available that communicates with the backend APIs
+At the end of those steps, a frontend should be available that communicates with the backend APIs

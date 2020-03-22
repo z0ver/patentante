@@ -15,18 +15,25 @@ export class ApiService {
 
   registerDealer(email: String, password: String): Observable<HttpEvent<string>> {
     // todo add proper call
-    return this.http.post<string>(this.url, {email, password}, null)
+    return this.http.post<string>(this.url + "/vendor/register", {email, password}, null)
   }
 
   login(email: String, password: String): Observable<HttpEvent<string>> {
-    // todo add proper call
-    return this.registerDealer(email, password)
+    return this.http.post<string>(this.url + "/user/login", {email, password}, null)
   }
 
-  getProfile(userId: string): Observable<HttpEvent<DealerProfile>> {
-    // todo add proper call
-    return null
+  getProfile(userId: String): Observable<any> {
+    return this.http.get(this.url + "/vendor/shops?" + userId)
   }
+
+  postDealerShops(profile: DealerProfile): Observable<any> {
+    return this.http.post(this.url + "/vendor/shops", profile, null)
+  }
+
+  putDealerShops(profile: DealerProfile): Observable<any> {
+    return this.http.put(this.url + "/vendor/shops", profile, null)
+  }
+
   getPostCodeCSV() {
     return this.http.get('assets/PLZ.csv', {responseType: 'text'})
   }

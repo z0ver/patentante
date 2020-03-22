@@ -43,6 +43,56 @@
     </mat-form-field>
 
     <br>
-    <button mat-raised-button color="primary" (click)="onSaveClick()" type="submit">Änderungen speichern</button>
+    <button mat-flat-button color="primary" (click)="onSaveChangesClick()" type="submit">Änderungen speichern</button>
+  </mat-card>
+
+  <mat-card class="box" layout-align="center center">
+    <h2>Gutscheine verwalten</h2>
+    <div *ngFor="let item of vouchers; let i=index" class="voucher-item">
+      <div *ngIf="!item.edit">
+
+        <div id="voucher-text">
+          <b>
+            {{i + 1}}. {{item.item.name}}:
+          </b>
+          Gesamtwert: {{item.item.totalValue}} EUR (davon Spende: {{item.item.donationValue}} EUR)
+        </div>
+
+        <div class="edit-buttons">
+          <button mat-icon-button (click)="onEditVoucherClick(item)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="onDeleteVoucherClick(item)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="item.edit">
+        <mat-form-field appearance="fill" class="container-bigger">
+          <mat-label>Gutscheinname</mat-label>
+          <input matInput [(ngModel)]="item.item.name">
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="container-smaller">
+          <mat-label>Gesamtwert</mat-label>
+          <input matInput [(ngModel)]="item.item.totalValue">
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="container-smaller">
+          <mat-label>Davon Spende</mat-label>
+          <input matInput [(ngModel)]="item.item.donationValue">
+        </mat-form-field>
+        <button mat-icon-button (click)="onEditVoucherClick(item)">
+          <mat-icon>check</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onDeleteVoucherClick(item)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <button mat-flat-button color="primary" (click)="onAddVoucherClick()" type="submit">
+      Gutschein hinzufügen
+    </button>
+
   </mat-card>
 </div>

@@ -9,3 +9,18 @@
 .container-smaller {
   width: 20%;
 }
+
+#voucher-text {
+  flex: 1;
+}
+
+.edit-buttons {
+  flex: 0.2;
+  justify-self: end;
+}
+
+.voucher-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+}

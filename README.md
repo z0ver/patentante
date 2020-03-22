@@ -37,4 +37,4 @@ Recommendation for Windows: Download [GIT Bash](https://git-scm.com/downloads)
 1. In the terminal, navigate to the frontend folder and run `npm i` to install the requirements
 1. Run ng serve to start the frontend
 
-At the end of those steps, a Frontend should be available that communicates with the backend APIs
+At the end of those steps, a frontend should be available that communicates with the backend APIs

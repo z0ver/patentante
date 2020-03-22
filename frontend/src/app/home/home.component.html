@@ -44,11 +44,11 @@
         <div class="pointer" (click)="shopClicked(place)">
           <div class="shop-content-container">
             <label class="shop-label">Name</label>
-            <label class="shop-content">{{place.short_description.name}}</label>
+            <label class="shop-content">{{place.information_basic.name}}</label>
           </div>
           <div class="shop-content-container">
             <label class="shop-label">Beschreibung</label>
-            <label class="shop-content">{{place.short_description.short_information}}</label>
+            <label class="shop-content">{{place.information_basic.description_short}}</label>
           </div>
         </div>
       </div>

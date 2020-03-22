@@ -43,7 +43,7 @@ export class ApiService {
     return null
   }
 
-  getShops(postCode) {
-    return this.http.get(`${this.url}/customer/shops?zip_code=${postCode}`)
+  getShopsByZip(zipCode) {
+    return this.http.get(this.url + '/shops/zip?zip_code=' + zipCode)
   }
 }

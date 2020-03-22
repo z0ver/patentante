@@ -125,9 +125,44 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   requestShops() {
-    this.apiService.getShops(this.postCode).subscribe(
+    this.apiService.getShopsByZip(this.postCode).subscribe(
       data => {
-        //this.places = data
+		this.places = JSON.parse(JSON.stringify(data)).Result
+		
+		this.markers.forEach((marker) => {
+          this.map.removeLayer(marker)
+        })
+        this.markers = [];
+        var that = this;
+
+        const provider = new OpenStreetMapProvider();
+		
+        // should add a marker forEach place
+        this.places.forEach((place) => {
+          provider
+            .search({query: place.address.street + " " + place.address.zip_code})
+            .then(function(result) {
+              if (result != undefined && result.length > 0) {
+                let marker = L.marker([result[0].y, result[0].x]);
+                marker.bindPopup(place.information_basic.name);
+				marker.bindPopup(place.information_basic.description_short);
+                marker.on('mouseover', function (e) {
+                    this.openPopup();
+                });
+                marker.on('mouseout', function (e) {
+                    this.closePopup();
+                });
+                marker.on('click', function (e) {
+                  console.log("click")
+                  that.shopClicked(place)
+                })
+                that.markers.push(marker)
+                that.map.addLayer(marker);
+              }
+            });
+        })
+		
+		
       },
       error => {
 
@@ -165,7 +200,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
             .then(function(result) {
               if (result != undefined && result.length > 0) {
                 let marker = L.marker([result[0].y, result[0].x]);
-                marker.bindPopup(place.short_description.name);
+                marker.bindPopup(place.information_basic.name);
+				marker.bindPopup(place.information_basic.description_short);
                 marker.on('mouseover', function (e) {
                     this.openPopup();
                 });

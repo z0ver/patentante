@@ -60,8 +60,15 @@ export class ShopSettingsComponent implements OnInit {
     editable.edit = !editable.edit;
   }
 
-  onDeleteVoucherClick(editable: Editable<Voucher>) {
-    console.log("delete voucher" + editable.item.name)
+  onAcceptEditVoucherClick(editable: Editable<Voucher>) {
+    this.onEditVoucherClick(editable);
+    //todo call api
+  }
+
+  onDeleteVoucherClick(index: number) {
+    console.log("delete voucher" + this.vouchers[index])
+    this.vouchers.splice(index, 1);
+    //todo call api
   }
 
   onAddVoucherClick() {

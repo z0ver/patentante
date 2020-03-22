@@ -62,7 +62,7 @@
           <button mat-icon-button (click)="onEditVoucherClick(item)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button (click)="onDeleteVoucherClick(item)">
+          <button mat-icon-button (click)="onDeleteVoucherClick(i)">
             <mat-icon>delete</mat-icon>
           </button>
         </div>
@@ -81,10 +81,10 @@
           <mat-label>Davon Spende</mat-label>
           <input matInput [(ngModel)]="item.item.donationValue">
         </mat-form-field>
-        <button mat-icon-button (click)="onEditVoucherClick(item)">
+        <button mat-icon-button (click)="onAcceptEditVoucherClick(item)">
           <mat-icon>check</mat-icon>
         </button>
-        <button mat-icon-button (click)="onDeleteVoucherClick(item)">
+        <button mat-icon-button (click)="onDeleteVoucherClick(i)">
           <mat-icon>delete</mat-icon>
         </button>
       </div>

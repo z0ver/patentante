@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import {HttpClient, HttpEvent, HttpHeaders} from '@angular/common/http';
 import { ApiService } from '../service/api.service';
 import {Router} from '@angular/router';
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
 declare let L;
 
 @Component({
@@ -154,23 +155,31 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.markers = [];
         var that = this;
 
+        const provider = new OpenStreetMapProvider();
+
         // should add a marker forEach place
         this.places.forEach((place) => {
-          // should be right lat, long
-          let marker = L.marker([this.lat, this.long]).addTo(this.map);
-          marker.bindPopup(place.short_description.name);
-          marker.on('mouseover', function (e) {
-              this.openPopup();
-          });
-          marker.on('mouseout', function (e) {
-              this.closePopup();
-          });
-          marker.on('click', function (e) {
-            console.log("click")
-            that.shopClicked(place)
-          })
-          this.markers.push(marker)
-          this.map.addLayer(marker);
+          provider
+            .search({ query: place.address.place + " " + place.address.number + " " + place.address.postCode })
+            .then(function(result) {
+              console.log(result)
+              if (result != undefined && result.length > 0) {
+                let marker = L.marker([result[0].y, result[0].x]);
+                marker.bindPopup(place.short_description.name);
+                marker.on('mouseover', function (e) {
+                    this.openPopup();
+                });
+                marker.on('mouseout', function (e) {
+                    this.closePopup();
+                });
+                marker.on('click', function (e) {
+                  console.log("click")
+                  that.shopClicked(place)
+                })
+                that.markers.push(marker)
+                that.map.addLayer(marker);
+              }
+            });
         })
       }
     )

@@ -152,8 +152,8 @@ def register_customer():
             return response_invalid_request()
 
 
-# Issue a new coupon or retrieve one by id #TODO retrieve
-@app.route('/user/vendor/coupon', methods=['POST'])
+# Issue a new coupon or retrieve all of a vendor
+@app.route('/user/vendor/coupon', methods=['POST', 'GET'])
 def vendor_coupon():
     if request.method == 'POST':
         data = request.get_json()
@@ -167,6 +167,14 @@ def vendor_coupon():
             return response_valid_request({"coupon_id": query_result.get("inserted_id")})
         else:
             return response_invalid_request()
+    elif request.method == 'GET':
+        owner_id = request.args.get('owner_id')
+        database_responses = getShopsByOwner(owner_id)
+        final_response = [{
+            "shop_id": database_response.get("shop_id"),
+            "coupons": getCouponsByShopID(database_response.get("shop_id"))
+        } for database_response in database_responses]
+        return response_valid_request(final_response)
 
 
 # register a new vendor
@@ -253,6 +261,13 @@ def get_coupons_by_shop():
     return response_valid_request(getCouponsByShopID(shop_id))
 
 
+# Get all coupons by a customer
+@app.route('/user/customer/coupons', methods=['GET'])
+def get_coupons_by_customer():
+    customer_id = request.args.get('customer_id')
+    return response_valid_request(getCouponsByCustomerID(customer_id))
+
+
 @app.route('/user/vendor/offer', methods=['POST', 'GET'])
 def vendor_offer():
     if request.method == 'POST':
@@ -314,6 +329,25 @@ def register_shop_and_retrieve_by_owner():
             "description": database_response.get("description"),
         } for database_response in database_responses]
         return response_valid_request(final_response)
+
+
+# Update value of coupon
+@app.route('/user/vendor/devalue_coupon', methods=['PUT'])
+def coupon_devalue():
+    data = request.get_json()
+    used_coupon_id = data.get('used_coupon_id')
+    new_value = data.get('new_value')
+    activated = data.get('activated')
+    return response_valid_request(updateCouponValue(used_coupon_id, new_value, activated))
+
+
+# activate coupon
+@app.route('/user/vendor/set_state_coupon', methods=['PUT'])
+def coupon_set_state():
+    data = request.get_json()
+    used_coupon_id = data.get('used_coupon_id')
+    status = data.get('status')  # todo check for constraints or just allow active here?
+    return response_valid_request(updateCouponStatus(used_coupon_id, status))
 
 
 if __name__ == '__main__':

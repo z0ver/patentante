@@ -4,8 +4,6 @@ import simplejson as json
 from flask import Flask, request, Response
 
 from config import secret_key
-import bcrypt
-import mysql.connector
 from db import *
 
 app = Flask(__name__)

@@ -19,6 +19,7 @@ from config import db_name
 
 
 #--------------------------Database Management--------------------
+# todo how to deal with invite mode?
 
 def getDbConnection():
     # Get database connection

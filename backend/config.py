@@ -1,5 +1,8 @@
-secret_key = 'random'
+import os
+#The keys need to be set on the server as environment variable
+secret_key = ['SECRET_KEY']
 db_host = "localhost"
-db_user = "root"
-db_passwd = "A1!n3_578"  # ToDo: extract as env variable
+db_user = os.environ['DB_USER']
+db_passwd = os.environ['DB_PASSWORD']
+db_name = os.environ['DB_NAME']
 db_session_timeout = 10

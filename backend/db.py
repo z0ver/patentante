@@ -8,6 +8,7 @@ from config import db_host as host
 from config import db_passwd as passwd
 from config import db_session_timeout as timeout
 from config import db_user as user
+from config import db_name
 
 
 # todo how to deal with invite mode?
@@ -24,7 +25,7 @@ def check_password(plain_text_password, hashed_password):
 def getDbConnection():
     # Get database connection
     try:
-        connection = mysql.connector.connect(host=host, user=user, passwd=passwd, database='test', charset="utf8")
+        connection = mysql.connector.connect(host=host, user=user, passwd=passwd, database=db_name, charset="utf8")
         return connection
     except mysql.connector.Error as error:
         print("Failed to connect to database {}".format(error))

@@ -1,4 +1,4 @@
-#!C:/xampp/htdocs/backend/.env/Scripts/python.exe
+#!/usr/bin/python
 from wsgiref.handlers import CGIHandler
 from app import app
 CGIHandler().run(app)

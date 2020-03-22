@@ -150,14 +150,14 @@ def shops_by_name():
         final_response = [{
             "shop_id": database_response.get("shop_id"),
             "owner_id": database_response.get("owner_id"),
-            "address'": {
+            "address": {
                 "street": database_response.get("street"),
                 "zip_code": database_response.get("zip_code"),
                 "city": database_response.get("city"),
                 "website_url": database_response.get("website_url"),
                 "phone_number": database_response.get("phone_number")
             },
-            "information_basic'": {
+            "information_basic": {
                 "name": database_response.get("name"),
                 "logo_url": database_response.get("logo_url"),
                 "description_short": database_response.get("description_short")
@@ -175,14 +175,14 @@ def get_shops_by_zip():
     final_response = [{
         "shop_id": database_response.get("shop_id"),
         "owner_id": database_response.get("owner_id"),
-        "address'": {
+        "address": {
             "street": database_response.get("street"),
             "zip_code": database_response.get("zip_code"),
             "city": database_response.get("city"),
             "website_url": database_response.get("website_url"),
             "phone_number": database_response.get("phone_number")
         },
-        "information_basic'": {
+        "information_basic": {
             "name": database_response.get("name"),
             "logo_url": database_response.get("logo_url"),
             "description_short": database_response.get("description_short")
@@ -260,14 +260,14 @@ def register_shop_and_retrieve_by_owner():
         database_responses = getShopsByOwner(owner_id)
         final_response = [{
             "shop_id": database_response.get("shop_id"),
-            "address'": {
+            "address": {
                 "street": database_response.get("street"),
                 "zip_code": database_response.get("zip_code"),
                 "city": database_response.get("city"),
                 "website_url": database_response.get("website_url"),
                 "phone_number": database_response.get("phone_number")
             },
-            "information_basic'": {
+            "information_basic": {
                 "name": database_response.get("name"),
                 "logo_url": database_response.get("logo_url"),
                 "description_short": database_response.get("description_short")

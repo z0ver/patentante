@@ -316,5 +316,24 @@ def register_shop_and_retrieve_by_owner():
         return response_valid_request(final_response)
 
 
+# Update value of coupon
+@app.route('/user/vendor/devalue_coupon', methods=['PUT'])
+def coupon_devalue():
+    data = request.get_json()
+    used_coupon_id = data.get('used_coupon_id')
+    new_value = data.get('new_value')
+    activated = data.get('activated')
+    return response_valid_request(updateCouponValue(used_coupon_id, new_value, activated))
+
+
+# activate coupon
+@app.route('/user/vendor/set_state_coupon', methods=['PUT'])
+def coupon_set_state():
+    data = request.get_json()
+    used_coupon_id = data.get('used_coupon_id')
+    status = data.get('status') #todo check for constraints or just allow active here?
+    return response_valid_request(updateCouponStatus(used_coupon_id, status))
+
+
 if __name__ == '__main__':
     app.run()

@@ -116,13 +116,16 @@ def getDataFromDB(sqlstatement, arguments):
 
 def updateDB(sqlstatement, data):
     updated_row = None
+    update_success = False
     try:
         connection = getDbConnection()
         if connection.is_connected():
             cursor = connection.cursor()
             cursor.execute(sqlstatement, data)
             connection.commit()
-            if cursor.rowcount > -1:
+            print(cursor.rowcount)
+            if cursor.rowcount > 0:
+                update_success = True
                 updated_row = cursor.lastrowid
                 print(cursor.rowcount, "record(s) updated successfully")
     except mysql.connector.Error as error:
@@ -130,7 +133,7 @@ def updateDB(sqlstatement, data):
     finally:
         cursor.close()
         connection.close()
-    if updated_row:
+    if update_success:
         return {'success': True, 'updated_id': updated_row}
     else:
         return {'success': False}
@@ -197,12 +200,12 @@ def getOffersByShopID(shop_id):
 
 
 def getBuyerByCouponID(coupon_id):
-    sqlstatement = """SELECT Users.* FROM Users, Coupons WHERE Coupons.coupons_id=%s AND Coupons.customer_id=Users.user_id"""
+    sqlstatement = """SELECT Users.* FROM Users, Coupons WHERE Coupons.coupon_id=%s AND Coupons.customer_id=Users.user_id"""
     return getDataFromDB(sqlstatement, (coupon_id,))
 
 
 def getVendorByCouponID(coupon_id):
-    sqlstatement = """SELECT Users.* FROM Coupons INNER JOIN Offers on Coupons.offer_id=Offers.offer_id INNER JOIN Shops on Offers.shop_id=Shops.shop_id INNER JOIN Users ON Shops.owner_id=Users.user_id WHERE Coupons.coupons_id=%s"""
+    sqlstatement = """SELECT Users.* FROM Coupons INNER JOIN Offers on Coupons.offer_id=Offers.offer_id INNER JOIN Shops on Offers.shop_id=Shops.shop_id INNER JOIN Users ON Shops.owner_id=Users.user_id WHERE Coupons.coupon_id=%s"""
     getDataFromDB(sqlstatement, (coupon_id,))
 
 
@@ -218,14 +221,11 @@ def getCouponsByShopID(shop_id):
     sqlstatement = """SELECT coupons.* FROM coupons INNER JOIN Offers on coupons.offer_id=offers.offer_id WHERE offers.shop_id=%s"""
     return getDataFromDB(sqlstatement, (shop_id,))
 
-def updateCouponValue(coupon_id, new_value, activated):
-    sqlstatement = """UPDATE coupons SET current_value=%s,status=%s WHERE coupons_id=%s"""
-    data = (new_value, activated, coupon_id)
-    return updateDB(sqlstatement, data)
+
 
 
 def getUsedCouponsByUserID(user_id):
-    sqlstatement = """SELECT coupons_id,current_value,original_value,status,date_of_purchase FROM coupons WHERE customer_id=%s AND status='USED_UP'"""
+    sqlstatement = """SELECT coupon_id,current_value,original_value,status,date_of_purchase FROM coupons WHERE customer_id=%s AND status='USED_UP'"""
     return getDataFromDB(sqlstatement, (user_id,))
 
 
@@ -241,10 +241,10 @@ def insertUser(email_address, firstname, lastname, phone_number, password_hash, 
     return insertIntoDB(sqlstatement, data)
 
 
-def createOffer(shop_id, offerType, name, description, value=0):
-    sqlstatement = """INSERT INTO Offers(shop_id, offerType, name, description, value) 
+def createOffer(shop_id, offer_type, name, description, value=0):
+    sqlstatement = """INSERT INTO Offers(shop_id, offer_type, name, description, value) 
                               VALUES (%s,%s,%s,%s,%s)"""
-    data = (shop_id, offerType, name, description, value)
+    data = (shop_id, offer_type, name, description, value)
     return insertIntoDB(sqlstatement, data)
 
 
@@ -274,15 +274,19 @@ def updateShopDetails(shop_id, name, zip_code, city, street, description, Logo_U
     data = (name, zip_code, city, street, description, Logo_URL, Link_Website, phone_number, shop_id)
     return updateDB(sqlstatement, data)
 
+def updateCouponValue(coupon_id, new_value, activated):
+    sqlstatement = """UPDATE coupons SET current_value=%s,status=%s WHERE coupon_id=%s"""
+    data = (new_value, activated, coupon_id)
+    return updateDB(sqlstatement, data)
 
 def updateCurrentCouponValue(coupon_id, current_value):
-    sqlstatement = """Update Coupons SET current_value = %s WHERE ccupon_id = %s"""
+    sqlstatement = """Update Coupons SET current_value = %s WHERE coupon_id = %s"""
     data = (current_value, coupon_id)
     return updateDB(sqlstatement, data)
 
 
 def updateCouponStatus(coupon_id, status):
-    sqlstatement = """Update Coupons SET status = %s WHERE ccupon_id = %s"""
+    sqlstatement = """Update Coupons SET status = %s WHERE coupon_id = %s"""
     data = (status, coupon_id)
     return updateDB(sqlstatement, data)
 
@@ -303,7 +307,7 @@ def deleteShop(shop_id):
 
 
 def deleteCoupon(coupon_id):
-    sqlstatement = """DELETE FROM coupons WHERE coupons_id = %s"""
+    sqlstatement = """DELETE FROM coupons WHERE coupon_id = %s"""
     deleteFromDB(sqlstatement, coupon_id)
 
 

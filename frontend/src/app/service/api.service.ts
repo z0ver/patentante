@@ -43,7 +43,7 @@ export class ApiService {
     return null
   }
 
-  getShops(lat, long, postCode) {
-    return this.http.get(`${this.url}/customer/shops?lat=${lat}&long=${long}&postCode=${postCode}`)
+  getShops(postCode) {
+    return this.http.get(`${this.url}/customer/shops?zip_code=${postCode}`)
   }
 }

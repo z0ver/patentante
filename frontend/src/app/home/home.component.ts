@@ -125,7 +125,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   requestShops() {
-    this.apiService.getShops(this.lat, this.long, this.postCode).subscribe(
+    this.apiService.getShops(this.postCode).subscribe(
       data => {
         //this.places = data
       },
@@ -162,7 +162,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
           provider
             .search({ query: place.address.place + " " + place.address.number + " " + place.address.postCode })
             .then(function(result) {
-              console.log(result)
               if (result != undefined && result.length > 0) {
                 let marker = L.marker([result[0].y, result[0].x]);
                 marker.bindPopup(place.short_description.name);

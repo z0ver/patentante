@@ -17,7 +17,7 @@ The details to frontend and backend are in a separate README.md in the correspon
 1. Execute the sql commands in the "DatabaseSchema.sql" file to set up the database
 1. Download [python 3](https://www.python.org/downloads/)
 1. Install the requirements using `pip install -r requirements.txt`
-1. modify the config value in the config.py file
+1. modify the config values in the config.py file
 #### Use Pycharm to host the Flask app
 1. Download [pycharm](https://www.jetbrains.com/pycharm/) or a tool of your choice and open the folder as python project
 1. start the app in the app.py file to start your local server (in PyCharm, this is built in when the file is run)

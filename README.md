@@ -15,7 +15,7 @@ The details to frontend and backend are in a separate README.md in the correspon
 
 1. Install a MySQL database on your machine. One possibility to have this running fast is to download [XAMPP](https://www.apachefriends.org/index.html)
 1. Execute the sql commands in the "DatabaseSchema.sql" file to set up the database
-1. Edit the config.py in the backend folder to match you database settings
+1. Edit the config.py in the backend folder to match your database settings
 1. Download [python 3](https://www.python.org/downloads/)
 1. Install the requirements using `pip install -r requirements.txt`
 1. modify the config values in the config.py file
@@ -34,8 +34,7 @@ After starting the Flask app, make sure it runs on port 5000 to match the specif
 Recommendation for Windows: Download [GIT Bash](https://git-scm.com/downloads)
 1. Install [Node.js](https://nodejs.org/en/)
 1. Run `npm install @angular/cli -g`
-1. In the terminal, navigate to the frontend folder and run `npm i`
-1. Run npm i to install the requirements
+1. In the terminal, navigate to the frontend folder and run `npm i` to install the requirements
 1. Run ng serve to start the frontend
 
 At the end of those steps, a Frontend should be available that communicates with the backend APIs

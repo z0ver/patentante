@@ -16,7 +16,6 @@ import {ShopSettingsComponent} from './shop-settings/shop-settings.component';
 import {ShopPageComponent} from './shop-page/shop-page.component';
 import { HelpButtonComponent } from './shop-page/help-button/help-button.component';
 import {MatRippleModule} from "@angular/material/core";
-import { AidBaseComponent } from './aid-base/aid-base.component';
 import { DialogComponent } from './dialog/dialog.component'
 import {MatDialogModule} from '@angular/material';
 import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
@@ -26,7 +25,6 @@ const appRoutes: Routes = [
   {path: 'shop-registration', component: ShopRegistrationComponent},
   {path: 'shop-settings', component: ShopSettingsComponent},
   {path: 'shop-page', component: ShopPageComponent},
-  {path: 'aid', component: AidBaseComponent},
   {
     path: '',
     redirectTo: '/home',
@@ -42,7 +40,6 @@ const appRoutes: Routes = [
     ShopSettingsComponent,
     ShopPageComponent,
     HelpButtonComponent,
-    AidBaseComponent,
     DialogComponent,
   ],
   imports: [

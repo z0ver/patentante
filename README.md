@@ -15,7 +15,7 @@ The details to frontend and backend are in a separate README.md in the correspon
 
 1. Install a MySQL database on your machine. One possibility to have this running fast is to download [XAMPP](https://www.apachefriends.org/index.html)
 1. Execute the sql commands in the "DatabaseSchema.sql" file to set up the database
-1. Edit the config.py in the backend folder to match you database credentials
+1. Edit the config.py in the backend folder to match you database settings
 1. Download [python 3](https://www.python.org/downloads/)
 1. Install the requirements using `pip install -r requirements.txt`
 1. modify the config values in the config.py file

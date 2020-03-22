@@ -5,7 +5,7 @@ The long term description of the project is given on the provided link (German).
 
 The goal of this project is that local shop owners can be supported financially by their customers, even if they had to close their shop.
 Our intent is that shops with few digital experience and money can register and provide their offers so customers can buy something and use it later.
-The goal for our team is that with this project, customers can become a general sponsor of their local shop and long-term support them.
+The goal for our team is that with this project, customers can become a general sponsor of their local shops and can also suppor them on the long-term.
 
 ## More detailed info
 The details to frontend and backend are in a separate README.md in the corresponding folder.

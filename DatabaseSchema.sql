@@ -1,14 +1,12 @@
 CREATE TABLE Users (
  user_id INT UNSIGNED NOT NULL  AUTO_INCREMENT,
- emailAddress VARCHAR(50) NOT NULL UNIQUE,
+ email_address VARCHAR(50) NOT NULL UNIQUE,
  firstname VARCHAR(30) NOT NULL,
  lastname VARCHAR(30) NOT NULL,
- phoneNumber VARCHAR(30),
- passwordHash VARCHAR(64) NOT NULL,
- passwordSalt VARCHAR(64) NOT NULL,
- token VARCHAR(64) NOT NULL,
- isVerified BOOLEAN NOT NULL,
- isOwner BOOLEAN NOT NULL,
+ phone_number VARCHAR(30),
+ password_hash VARCHAR(64) NOT NULL,
+ is_verified BOOLEAN NOT NULL,
+ is_owner BOOLEAN NOT NULL,
  PRIMARY KEY ( user_id )
 );
 
@@ -16,13 +14,14 @@ CREATE TABLE Shops (
  shop_id int UNSIGNED NOT NULL  AUTO_INCREMENT,
  owner_id INT UNSIGNED NOT NULL,
  name VARCHAR(30) NOT NULL,
- zipCode VARCHAR(10) NOT NULL,
+ zip_code VARCHAR(10) NOT NULL,
  city VARCHAR(10) NOT NULL,
  street VARCHAR(50) NOT NULL,
  description VARCHAR(3000) NOT NULL,
- Logo_URL VARCHAR(150),
- Link_Website VARCHAR(150),
- phoneNumber VARCHAR(50) NOT NULL,
+ description_short VARCHAR(500) NOT NULL,
+ logo_url VARCHAR(150),
+ website_url VARCHAR(150),
+ phone_number VARCHAR(50) NOT NULL,
  PRIMARY KEY ( shop_id ),
  CONSTRAINT fk_Users FOREIGN KEY (owner_id) REFERENCES Users(user_id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
@@ -30,7 +29,7 @@ CREATE TABLE Shops (
 CREATE TABLE Offers (
  offer_id int UNSIGNED NOT NULL  AUTO_INCREMENT,
  shop_id INT UNSIGNED NOT NULL,
- offerType ENUM('DONATION', 'VALUE', 'PRODUCT') NOT NULL,
+ offer_type ENUM('DONATION', 'VALUE', 'PRODUCT') NOT NULL,
  name VARCHAR(50) NOT NULL,
  description VARCHAR(50) NOT NULL,
  value DECIMAL(6,4),
@@ -39,14 +38,14 @@ CREATE TABLE Offers (
 );
 
 CREATE TABLE Coupons (
- coupons_id INT UNSIGNED NOT NULL  AUTO_INCREMENT,
+ coupon_id INT UNSIGNED NOT NULL  AUTO_INCREMENT,
  offer_id INT UNSIGNED NOT NULL,
  customer_id INT UNSIGNED NOT NULL,
  original_value DECIMAL(6,4) NOT NULL,
  current_value DECIMAL(6,4) NOT NULL,
  status ENUM('PAYMENT_PENDING','ACTIVATE','USED_UP') NOT NULL,
  date_of_purchase TIMESTAMP NOT NULL,
- PRIMARY KEY ( coupons_id ),
+ PRIMARY KEY ( coupon_id ),
  CONSTRAINT fk_Offers FOREIGN KEY ( offer_id ) REFERENCES Offers(offer_id) ON DELETE NO ACTION ON UPDATE NO ACTION,
  CONSTRAINT fk_Customers FOREIGN KEY ( customer_id ) REFERENCES Users(user_id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

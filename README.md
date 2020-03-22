@@ -28,7 +28,7 @@ The details to frontend and backend are in a separate README.md in the correspon
 1. be sure that the httpd.conf file of the Apache server contains `AddHandler cgi-script .cgi .py`
 1. put the path to your local python installation in the first line of the application.cgi file: `#!/path/to/python`
 
-After starting the Flask app, make sure it runs on port 5000 to match the specification of the frontend.
+After starting the Flask app, make sure it runs on port 5000 to match the specification of the frontend (or configure the port in /frontend/src/app/service/api.service.ts)
 
 ### Frontend
 Recommendation for Windows: Download [GIT Bash](https://git-scm.com/downloads)

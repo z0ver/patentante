@@ -1,6 +1,5 @@
 Flask
-flask-login
-flask-session
+flask-cors
 Werkzeug==0.16.0
 mysql-connector-python
 simplejson

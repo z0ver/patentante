@@ -9,7 +9,7 @@
 }
 
 .example-margin {
-  margin: 20px;
+  margin-right: 20px;
 }
 
 .hidden {
@@ -38,3 +38,19 @@
 .shop-content {
   flex: 7
 }
+
+.image-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px
+}
+
+.flex {
+  display: flex;
+  justify-content: center;
+}
+
+.box {
+  background-color: #f1c40f;
+}
+

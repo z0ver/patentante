@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import {HttpClient, HttpEvent, HttpHeaders} from '@angular/common/http';
 import { ApiService } from '../service/api.service';
+import {Router} from '@angular/router';
 declare let L;
 
 @Component({
@@ -23,8 +24,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   postCodeMap;
   map;
+  markers = [];
 
-  constructor(private http: HttpClient, private apiService: ApiService) {
+  constructor(private router: Router, private apiService: ApiService) {
   }
 
   ngOnInit() {
@@ -59,7 +61,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   loadMap() {
-    this.map = L.map('map').setView([51.505, -0.09], 13);
+    this.map = L.map('map').setView([52.520008, 13.404954], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
@@ -107,7 +109,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
     this.currentTown = this.postCodeMap[postCode] != undefined ? this.postCodeMap[postCode].town : this.currentTown
 
-    if (this.postCodeMap[postCode].lat != undefined && this.postCodeMap[postCode].long != undefined) {
+    if (this.postCodeMap[postCode] != undefined && this.postCodeMap[postCode].lat != undefined && this.postCodeMap[postCode].long != undefined) {
       this.lat = this.postCodeMap[postCode].lat
       this.long = this.postCodeMap[postCode].long
       this.map.panTo(new L.LatLng(this.postCodeMap[postCode].lat, this.postCodeMap[postCode].long));
@@ -116,7 +118,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  shopClicked() {
+  public shopClicked() {
+    this.router.navigate(['shop-page'])
     console.log("go to shop")
   }
 
@@ -145,6 +148,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
             }
         }]
 
+        this.markers.forEach((marker) => {
+          this.map.removeLayer(marker)
+        })
+        this.markers = [];
+        var that = this;
+
         // should add a marker forEach place
         this.places.forEach((place) => {
           // should be right lat, long
@@ -158,7 +167,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
           });
           marker.on('click', function (e) {
             console.log("click")
-          });
+            that.shopClicked()
+          })
+          this.markers.push(marker)
           this.map.addLayer(marker);
         })
       }

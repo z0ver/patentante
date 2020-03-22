@@ -40,6 +40,7 @@
       <mat-card-title>Liste</mat-card-title>
     </mat-card-header>
     <mat-card-content>
+      <div *ngIf="places.length <= 0">Für den aktuellen Ort sind keine Anbieter registriert</div>
       <div class="shop-container" *ngFor="let place of places">
         <div class="pointer" (click)="shopClicked(place)">
           <div class="shop-content-container">

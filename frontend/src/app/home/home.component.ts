@@ -127,16 +127,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
   requestShops() {
     this.apiService.getShopsByZip(this.postCode).subscribe(
       data => {
-		this.places = JSON.parse(JSON.stringify(data)).Result
-		
-		this.markers.forEach((marker) => {
+        this.places = JSON.parse(JSON.stringify(data)).Result
+
+        console.log(this.places)
+
+		    this.markers.forEach((marker) => {
           this.map.removeLayer(marker)
         })
         this.markers = [];
         var that = this;
 
         const provider = new OpenStreetMapProvider();
-		
+
         // should add a marker forEach place
         this.places.forEach((place) => {
           provider
@@ -145,7 +147,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
               if (result != undefined && result.length > 0) {
                 let marker = L.marker([result[0].y, result[0].x]);
                 marker.bindPopup(place.information_basic.name);
-				marker.bindPopup(place.information_basic.description_short);
+				        marker.bindPopup(place.information_basic.description_short);
                 marker.on('mouseover', function (e) {
                     this.openPopup();
                 });
@@ -161,62 +163,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
               }
             });
         })
-		
-		
+
+
       },
       error => {
-
-        // this code shoud be in succes case
-        this.places = [{
-            "shopID": "shopID",
-            "address": {
-              "postCode": "04317",
-              "place": "Prager Straße",
-              "number": "10",
-            },
-            "short_description": {
-              "telephon": "05968605958",
-              "name": "Mein Shop",
-              "logo": "LogoURL",
-              "short_information": "Wir sind ein schöner Laden",
-            },
-            "description": {
-              "long_information": "Wir sind ein schöner Laden aber lang"
-            }
-        }]
-
-        this.markers.forEach((marker) => {
-          this.map.removeLayer(marker)
-        })
-        this.markers = [];
-        var that = this;
-
-        const provider = new OpenStreetMapProvider();
-
-        // should add a marker forEach place
-        this.places.forEach((place) => {
-          provider
-            .search({ query: place.address.place + " " + place.address.number + " " + place.address.postCode })
-            .then(function(result) {
-              if (result != undefined && result.length > 0) {
-                let marker = L.marker([result[0].y, result[0].x]);
-                marker.bindPopup(place.information_basic.name);
-				marker.bindPopup(place.information_basic.description_short);
-                marker.on('mouseover', function (e) {
-                    this.openPopup();
-                });
-                marker.on('mouseout', function (e) {
-                    this.closePopup();
-                });
-                marker.on('click', function (e) {
-                  console.log("click")
-                  that.shopClicked(place)
-                })
-                that.markers.push(marker)
-                that.map.addLayer(marker);
-              }
-            });
-        })
+        console.log(error)
       }
     )
   }

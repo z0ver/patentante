@@ -118,6 +118,8 @@ def loggedin_page():
     else:
         return redirect(url_for('login_page'))
 
+
+# login user
 @app.route('/user/login', methods=['POST'])
 def login_user():
     if request.method == 'POST':
@@ -132,6 +134,7 @@ def login_user():
             return response_unauthorized_request()
 
 
+# register a new customer
 @app.route('/user/customer/register', methods=['POST'])
 def register_customer():
     if request.method == 'POST':
@@ -148,7 +151,8 @@ def register_customer():
         else:
             return response_invalid_request()
 
-# Issue a new coupon or retrieve one by id
+
+# Issue a new coupon or retrieve one by id #TODO retrieve
 @app.route('/user/vendor/coupon', methods=['POST'])
 def vendor_coupon():
     if request.method == 'POST':
@@ -165,7 +169,7 @@ def vendor_coupon():
             return response_invalid_request()
 
 
-
+# register a new vendor
 @app.route('/user/vendor/register', methods=['POST'])
 def register_vendor():
     if request.method == 'POST':
@@ -181,6 +185,73 @@ def register_vendor():
             return response_valid_request({"user_id": result.get('inserted_id')})
         else:
             return response_invalid_request()
+
+
+# Get all shops with a specific name
+@app.route('/shops/name', methods=['GET'])
+def shops_by_name():
+    if request.method == 'GET':
+        shopname = request.args.get('name')
+        database_responses = getShopsByName(shopname)
+        final_response = [{
+            "shop_id": database_response.get("shop_id"),
+            "owner_id": database_response.get("owner_id"),
+            "address'": {
+                "street": database_response.get("street"),
+                "zip_code": database_response.get("zip_code"),
+                "city": database_response.get("city"),
+                "website_url": database_response.get("website_url"),
+                "phone_number": database_response.get("phone_number")
+            },
+            "information_basic'": {
+                "name": database_response.get("name"),
+                "logo_url": database_response.get("logo_url"),
+                "description_short": database_response.get("description_short")
+            },
+            "description": database_response.get("description"),
+        } for database_response in database_responses]
+        return response_valid_request(final_response)
+
+
+# Get all shops for a specific PLZ
+@app.route('/shops/zip', methods=['GET'])
+def get_shops_by_zip():
+    zip_code = request.args.get('zip_code')
+    database_responses = getShopsByZipCode(zip_code)
+    final_response = [{
+        "shop_id": database_response.get("shop_id"),
+        "owner_id": database_response.get("owner_id"),
+        "address'": {
+            "street": database_response.get("street"),
+            "zip_code": database_response.get("zip_code"),
+            "city": database_response.get("city"),
+            "website_url": database_response.get("website_url"),
+            "phone_number": database_response.get("phone_number")
+        },
+        "information_basic'": {
+            "name": database_response.get("name"),
+            "logo_url": database_response.get("logo_url"),
+            "description_short": database_response.get("description_short")
+        },
+        "description": database_response.get("description"),
+        "offers": getOffersByShopID(database_response.get("shop_id"))
+    } for database_response in database_responses]
+    return response_valid_request(final_response)
+
+
+# Get all offers by a shop
+@app.route('/shops/offer', methods=['GET'])
+def get_offer_by_shop():
+    shop_id = request.args.get('shop_id')
+    return response_valid_request(getOffersByShopID(shop_id))
+
+# Get all coupons for a shop
+@app.route('/shops/coupons', methods=['GET'])
+def get_coupons_by_shop():
+    shop_id = request.args.get('shop_id')
+    return response_valid_request(getCouponsByShopID(shop_id))
+
+
 
 if __name__ == '__main__':
     app.run()

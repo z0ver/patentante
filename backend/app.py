@@ -36,6 +36,14 @@ CORS(app)
 app.secret_key = secret_key
 app.config['SESSION_TYPE'] = 'filesystem'
 
+
+"""
+ToDo: Session management (not implemented yet in Frontend and API definitions)
+Concept: session table (see database creation sql script) contains sessions of the users accessing the page
+Each API call, the session is updated to last n minutes longer
+If an API call was after that time, the user is redirected to Login
+"""
+
 #-------------------Section with predefined requests for standardization---------------
 
 #Function returning message "Invalid request" from this server
@@ -94,7 +102,7 @@ def response_valid_request(data):
                     mimetype="application/json")
 
 
-#-----------------------APIs for User management--------------------
+#-----------------------User management--------------------
 
 # login user
 @app.route('/user/login', methods=['POST'])
@@ -148,9 +156,9 @@ def register_vendor():
 
 
 
-#------------------------Vendor-specific APIs------------------------
+#------------------------Vendor-based functions------------------------
 
-# Issue a new coupon or retrieve all of a vendor
+# Issue a new coupon or retrieve all coupons of a shop
 @app.route('/user/vendor/coupon', methods=['POST', 'GET'])
 def vendor_coupon():
     if request.method == 'POST':
@@ -194,7 +202,7 @@ def vendor_offer():
         shop_id = request.args.get('shop_id')
         return response_valid_request(getOffersByShopID(shop_id))
 
-# add a new shop for a owner and get all shops for an owner
+# add a new shop for a vendor and get all shops for a vendor
 @app.route('/user/vendor/shops', methods=['POST', 'GET'])
 def register_shop_and_retrieve_by_owner():
     if request.method == 'POST':
@@ -237,7 +245,7 @@ def register_shop_and_retrieve_by_owner():
         return response_valid_request(final_response)
 
 
-#----------------------------Shop-relevant functions---------------------
+#----------------------------Shop-based functions---------------------
 
 # Get all shops with a specific name
 @app.route('/shops/name', methods=['GET'])
@@ -265,7 +273,7 @@ def shops_by_name():
         return response_valid_request(final_response)
 
 
-# Get all shops for a specific PLZ
+# Get all shops for a specific zip code
 @app.route('/shops/zip', methods=['GET'])
 def get_shops_by_zip():
     zip_code = request.args.get('zip_code')
@@ -306,7 +314,7 @@ def get_coupons_by_shop():
 
 
 
-#-------------------------------Coupon management------------------------
+#-------------------------------Coupon-based functions------------------------
 
 # Get all coupons by a customer
 @app.route('/user/customer/coupons', methods=['GET'])

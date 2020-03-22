@@ -3,6 +3,8 @@
 import bcrypt
 import mysql.connector
 
+#todo how to deal with invite mode?
+
 # Get Database connection details from app configuration
 from config import db_host as host
 from config import db_passwd as passwd
@@ -213,7 +215,7 @@ def getCouponsByCustomerID(customer_id):
     sqlstatement = """SELECT * FROM coupons WHERE customer_id=%s"""
     return getDataFromDB(sqlstatement, (customer_id,))
 
-def getCouponsByCouponID(coupon_id):
+def getCouponByCouponID(coupon_id):
     sqlstatement = """SELECT * FROM coupons WHERE coupon_id=%s"""
     return getDataFromDB(sqlstatement, (coupon_id,))
 

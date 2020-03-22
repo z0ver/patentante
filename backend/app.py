@@ -252,6 +252,11 @@ def get_coupons_by_shop():
     shop_id = request.args.get('shop_id')
     return response_valid_request(getCouponsByShopID(shop_id))
 
+# Get all coupons by a customer
+@app.route('/user/customer/coupons', methods=['GET'])
+def get_coupons_by_customer():
+    customer_id = request.args.get('customer_id')
+    return response_valid_request(getCouponsByCustomerID(customer_id))
 
 @app.route('/user/vendor/offer', methods=['POST', 'GET'])
 def vendor_offer():

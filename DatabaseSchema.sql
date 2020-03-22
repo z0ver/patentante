@@ -39,9 +39,9 @@ CREATE TABLE Offers (
 );
 
 CREATE TABLE Coupons (
- coupons_id SERIAL,
- offer_id INT UNSIGNED NOT NULL,
- customer_id INT UNSIGNED NOT NULL,
+ coupons_ID SERIAL PRIMARY KEY,
+ offer_ID INT UNSIGNED NOT NULL REFERENCES Offers(offer_ID),
+ customer_id INT UNSIGNED NOT NULL REFERENCES Customers(customer_id),
  original_value DECIMAL(6,4) NOT NULL,
  current_value DECIMAL(6,4) NOT NULL,
  status ENUM('PAYMENT_PENDING','ACTIVATE','USED_UP') NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE Coupons (
 );
 
 CREATE TABLE Sessions (
-user_id INT,
+user_ID INT REFERENCES Users(user_id),
 session_token VARCHAR(64) UNIQUE,
 end_date TIMESTAMP NOT NULL
 CONSTRAINT fk_Users FOREIGN KEY ( user_id ) REFERENCES Users(user_id) ON DELETE NO ACTION ON UPDATE NO ACTION

@@ -9,7 +9,7 @@ import {DealerProfile} from "../model/dealer-profile";
 })
 export class ApiService {
 
-  private url = "mock"; // todo add url
+  private url = "http://localhost:5000";
 
   constructor(private http: HttpClient) { }
 

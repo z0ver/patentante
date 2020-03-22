@@ -1,13 +1,13 @@
-from flask import Flask, redirect, url_for, session, render_template, request, Response
-from flask_login import LoginManager, login_user, current_user, login_required
-from flask_session import Session
-
-import simplejson as json
-from db import *
 from datetime import datetime
 
-from model import User
+import simplejson as json
+from flask import Flask, redirect, url_for, session, render_template, request, Response
+from flask_login import LoginManager, login_user, login_required
+from flask_session import Session
+
 from config import secret_key
+from db import *
+from model import User
 
 app = Flask(__name__)
 app.secret_key = secret_key
@@ -18,6 +18,7 @@ Session(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login_page'
+
 
 def response_invalid_request():
     """
@@ -32,6 +33,7 @@ def response_invalid_request():
                     status=400,
                     mimetype="application/json")
 
+
 def response_unauthorized_request():
     """
     Response to an unauthorized request.
@@ -45,22 +47,23 @@ def response_unauthorized_request():
                     status=401,
                     mimetype="application/json")
 
+
 def response_valid_request(data):
     """
     Response to a valid request.
     :return: JSON wthat contains the input data
     """
-    #this area converts datetime values from python to strings so they are serializable
+    # this area converts datetime values from python to strings so they are serializable
     for row in data:
-        if isinstance(row,dict):
+        if isinstance(row, dict):
             for key, value in row.items():
-                if isinstance(value,list):
+                if isinstance(value, list):
                     for list_index, list_value in enumerate(value):
                         if isinstance(list_value, dict):
                             for list_item_key, list_item_value in list_value.items():
                                 if isinstance(list_item_value, datetime):
                                     row[key][list_index][list_item_key] = list_item_value.strftime("%Y-%m-%d %H:%M:%S")
-                if isinstance(value,datetime):
+                if isinstance(value, datetime):
                     row[key] = value.strftime("%Y-%m-%d %H:%M:%S")
     _response = {}
     _response['Success'] = True
@@ -70,13 +73,15 @@ def response_valid_request(data):
                     status=200,
                     mimetype="application/json")
 
-#Main page, ToDo: create main page template
+
+# Main page, ToDo: create main page template
 @app.route('/')
 @login_required
 def index():
     return "Welcome"
 
-#compare the user id with the known sessions
+
+# compare the user id with the known sessions
 @login_manager.user_loader
 def load_user(id):
     if 'users' in session.keys():
@@ -88,23 +93,25 @@ def load_user(id):
         session['users'] = {}
     return id
 
-#Login page for the user
+
+# Login page for the user
 @app.route('/login')
 def login_page():
     return render_template("login_form.html")
 
-#Page where the data entered in the login page gets validated
-#If validation not successful, it moves back to the login page
+
+# Page where the data entered in the login page gets validated
+# If validation not successful, it moves back to the login page
 @app.route('/logged-in', methods=['POST'])
 def loggedin_page():
     username = request.form["username"]
     password = request.form["password"]
-    #ToDo: database check if we know this user and the password is correct
+    # ToDo: database check if we know this user and the password is correct
     if (password == '1234' and username == 'test'):
         session.clear()
         if not 'users' in session.keys():
             session['users'] = {}
-        user = User({"id":0, "name":"Horst"})
+        user = User({"id": 0, "name": "Horst"})
         session['users'][user.id] = user
         login_user(user)
         return redirect(url_for('index'))
@@ -112,84 +119,181 @@ def loggedin_page():
         return redirect(url_for('login_page'))
 
 
-#Get or create coupons for the dealer
-@app.route('/dealer/coupons',methods=['GET','POST'])
-def dealer_coupon():
-    if request.method == 'POST':
-        data = request.get_json()
-        profile_id = data.get('profileId')
-        offer_id = data.get('offerId')
-        coupon_value = data.get('value')
-        price = data.get('price')
-        status = data.get('status')
-        query_result = insertCoupon(offer_ID=offer_id, customer_ID=profile_id, original_value=price,current_value=coupon_value,status=status,date_of_purchase=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        return {"couponId": query_result.get("inserted_row")}
-    elif request.method ==  'GET':
-        profile_id = request.args.get('profileId')
-        return response_valid_request(getCouponsByUserID(profile_id))
-
-#Get all coupons for the dealer which are already used up
-@app.route('/dealer/used_coupons',methods=['GET'])
-def dealer_coupon_used():
+# Get all coupons for the vendor which are already used up
+@app.route('/vendor/used_coupons', methods=['GET'])
+def vendor_coupon_used():
     profile_id = request.args.get('profileId')
     return response_valid_request(getUsedCouponsByUserID(profile_id))
 
-#Update value and potentially devalue it
-@app.route('/dealer/devalue_coupon',methods=['PUT'])
-def dealer_devalue_coupon():
+
+# Update value and potentially devalue it
+@app.route('/vendor/devalue_coupon', methods=['PUT'])
+def vendor_devalue_coupon():
     data = request.get_json()
     used_coupon_id = data.get('used_couponId')
     new_value = data.get('new_value')
     activated = data.get('activated')
-    return response_valid_request(updateCouponValue(used_coupon_id,new_value,activated))
+    return response_valid_request(updateCouponValue(used_coupon_id, new_value, activated))
 
-#Get all dealers for a specific PLZ
-@app.route('/customer/list_dealers',methods=['GET'])
-def get_dealers_by_zip():
-    plz = request.args.get('plz')
-    database_responses = getShopsByZipCode(plz)
+
+# Get all shops for a specific PLZ
+@app.route('/customer/list_shops', methods=['GET'])
+def get_shops_by_zip():
+    zip_code = request.args.get('zip_code')
+    database_responses = getShopsByZipCode(zip_code)
     final_response = [{
-        "profileId": database_response.get("owner_id"),
-        "address'":{
-            "postcode": database_response.get("zipCode"),
-            "place": database_response.get("street")+" "+database_response.get("city"),
-            "number": database_response.get("phoneNumber")
+        "shop_id": database_response.get("shop_id"),
+        "owner_id": database_response.get("owner_id"),
+        "address'": {
+            "street": database_response.get("street"),
+            "zip_code": database_response.get("zip_code"),
+            "city": database_response.get("city"),
+            "website_url": database_response.get("website_url"),
+            "phone_number": database_response.get("phone_number")
+        },
+        "information_basic'": {
+            "name": database_response.get("name"),
+            "logo_url": database_response.get("logo_url"),
+            "description_short": database_response.get("description_short")
         },
         "description": database_response.get("description"),
-        "coupons": getCouponsByUserID(database_response.get("owner_id"))
+        "offers": getOffersByShopID(database_response.get("shop_id"))
     } for database_response in database_responses]
     return response_valid_request(final_response)
 
-#Login for users with owner status
-@app.route('/dealer/login', methods=['POST'])
-def login_dealer():
-    if request.method == 'POST':
-        data = request.get_json()
-        email = data.get('email')
-        password = data.get('password')
-        hash = getUserByMail(email)
-        if check_password(password.encode('utf8'), hash[0].get('passwordHash').encode('utf8')):
-            return response_valid_request({"userid": hash[0].get('user_id')})
-        else:
-            return response_unauthorized_request()
 
-#Check for shops using a part of the name
 @app.route('/shops/name', methods=['GET'])
 def shops_by_name():
     if request.method == 'GET':
         shopname = request.args.get('name')
         return response_valid_request(getShopsByName(shopname))
 
-#Request a new coupon for a customer
+
+# Get or create coupons for the vendor
+@app.route('/vendor/coupons', methods=['GET', 'POST'])
+def vendor_coupon():
+    if request.method == 'POST':
+        data = request.get_json()
+        profile_id = data.get('profile_id')
+        offer_id = data.get('offer_id')
+        coupon_value = data.get('value')
+        price = data.get('price')
+        status = data.get('status')
+        query_result = insertCoupon(offer_id=offer_id, customer_id=profile_id, original_value=price,
+                                    current_value=coupon_value,
+                                    status=status, date_of_purchase=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        return {"couponId": query_result.get("inserted_row")}
+    elif request.method == 'GET':
+        profile_id = request.args.get('profileId')
+        return response_valid_request(getCouponsByUserID(profile_id))
+
+
+@app.route('/user/login', methods=['POST'])
+def login_user():
+    if request.method == 'POST':
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+        hash = getUserByMail(email)
+        if hash != []:
+            if check_password(password.encode('utf8'), hash[0].get('password_hash').encode('utf8')):
+                return response_valid_request({"user_id": hash[0].get('user_id'), "is_owner": hash[0].get('is_owner')})
+        else:
+            return response_unauthorized_request()
+
+
+# Request a new coupon for a customer
 @app.route('/customer/request_coupon', methods=['POST'])
 def request_coupon():
     data = request.get_json()
-    profile_id = data.get('profileId')
-    offer_id = data.get('offerId')
-    current_value = data.get('donation')
-    original_value = data.get('donation')
-    query_result = insertCoupon(offer_ID=offer_id, customer_ID=profile_id, original_value=original_value,current_value=current_value,status='ACTIVATE',date_of_purchase=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    return {"couponId":query_result.get("inserted_row")}
+    customer_id = data.get('customer_id')
+    offer_id = data.get('offer_id')
+    original_value = data.get('original_value')
+    query_result = insertCoupon(offer_id=offer_id, customer_id=customer_id, original_value=original_value,
+                                current_value=original_value, status='ACTIVATE',
+                                date_of_purchase=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    if query_result.get('success'):
+        return response_valid_request({"coupon_id": query_result.get("inserted_id")})
+    else:
+        return response_invalid_request()
+
+
+@app.route('/customer/register', methods=['POST'])
+def register_customer():
+    if request.method == 'POST':
+        data = request.get_json()
+        email = data.get('email')
+        firstname = data.get('firstname')
+        lastname = data.get('lastname')
+        phone_number = data.get('phone_number')
+        password = data.get('password')
+        passwordHash = get_hashed_password(password.encode('utf8'))
+        result = insertUser(email, firstname, lastname, phone_number, passwordHash, False)
+        if result.get('success'):
+            return response_valid_request({"user_id": result.get('inserted_id')})
+        else:
+            return response_invalid_request()
+
+
+@app.route('/vendor/register', methods=['POST'])
+def register_vendor():
+    if request.method == 'POST':
+        data = request.get_json()
+        email = data.get('email')
+        firstname = data.get('firstname')
+        lastname = data.get('lastname')
+        phone_number = data.get('phonenumber')
+        password = data.get('password')
+        passwordHash = get_hashed_password(password.encode('utf8'))
+        result = insertUser(email, firstname, lastname, phone_number, passwordHash, True)
+        if result.get('success'):
+            return response_valid_request({"user_id": result.get('inserted_id')})
+        else:
+            return response_invalid_request()
+
+
+# Get all shops for a specific vendor
+@app.route('/vendor/shops', methods=['GET', 'POST'])
+def get_shops_by_vendor():
+    if request.method == 'GET':
+        user_id = request.args.get('user_id')
+        database_responses = getShopsByOwner(user_id)
+        final_response = [{
+            "shop_id": database_response.get("shop_id"),
+            "address'": {
+                "street": database_response.get("street"),
+                "zip_code": database_response.get("zip_code"),
+                "city": database_response.get("city"),
+                "website_url": database_response.get("website_url"),
+                "phone_number": database_response.get("phone_number")
+            },
+            "information_basic'": {
+                "name": database_response.get("name"),
+                "logo_url": database_response.get("logo_url"),
+                "description_short": database_response.get("description_short")
+            },
+            "description": database_response.get("description"),
+        } for database_response in database_responses]
+        return response_valid_request(final_response)
+    elif request.method == 'POST':
+        data = request.get_json()
+        owner_id = data.get('owner_id')
+        street = data.get('street')
+        zip_code = data.get('zip_code')
+        city = data.get('city')
+        website_url = data.get('website_url')
+        phone_number = data.get('phone_number')
+        name = data.get('name')
+        logo_url = data.get('logo_url')
+        description_short = data.get('description_short')
+        description = data.get('description')
+        result = insertShopDetails(owner_id, street, zip_code, city, website_url, phone_number, name, logo_url,
+                                   description_short, description)
+        if result.get('success'):
+            return response_valid_request({"shop_id": result.get('inserted_id')})
+        else:
+            return response_invalid_request()
+        pass
 
 
 if __name__ == '__main__':

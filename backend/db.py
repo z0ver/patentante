@@ -81,9 +81,9 @@ def insertIntoDB(sqlstatement, data):
         if connection:
             connection.close()
     if inserted_row:
-        return {'success': True, 'inserted_row': inserted_row}
+        return {'success': True, 'inserted_id': inserted_row}
     else:
-        return {'success': False, 'inserted_row': inserted_row}
+        return {'success': False}
 
 
 def getDataFromDB(sqlstatement, arguments):
@@ -131,9 +131,9 @@ def updateDB(sqlstatement, data):
         cursor.close()
         connection.close()
     if updated_row:
-        return {'success': True, 'updated_row': updated_row}
+        return {'success': True, 'updated_id': updated_row}
     else:
-        return {'success': False, 'updated_row': updated_row}
+        return {'success': False}
 
 
 def deleteFromDB(sqlstatement, delete_id):
@@ -155,25 +155,30 @@ def deleteFromDB(sqlstatement, delete_id):
     return {'success': deletion_done}
 
 
-def insertSessionID(user_ID, session_ID):
-    sqlstatement = """INSERT INTO Sessions(user_ID, session_token) 
+def insertSessionID(user_id, session_id):
+    sqlstatement = """INSERT INTO Sessions(user_id, session_token) 
     VALUES (%s,%s,TIMESTAMPADD(MINUTE, %s, CURRENT_TIMESTAMP))"""
-    return insertIntoDB(sqlstatement, (user_ID, session_ID, timeout))
+    return insertIntoDB(sqlstatement, (user_id, session_id, timeout))
 
 
-def updateExpiringSession(session_ID):
+def updateExpiringSession(session_id):
     sqlstatement = """UPDATE sessions SET end_date=TIMESTAMPADD(MINUTE, %s, CURRENT_TIMESTAMP) where session_token = %s"""
-    return updateDB(sqlstatement, (timeout, session_ID))
+    return updateDB(sqlstatement, (timeout, session_id))
 
 
-def getSessionIDByUser(user_ID):
-    sqlstatement = """SELECT session_token FROM sessions where user_ID = %s"""
-    return getDataFromDB(sqlstatement, (user_ID,))
+def getSessionIDByUser(user_id):
+    sqlstatement = """SELECT session_token FROM sessions where user_id = %s"""
+    return getDataFromDB(sqlstatement, (user_id,))
 
 
 def getShopsByZipCode(zipcode):
-    sqlstatement = """SELECT * FROM Shops WHERE zipCode=%s"""
+    sqlstatement = """SELECT * FROM Shops WHERE zip_code=%s"""
     return getDataFromDB(sqlstatement, (zipcode,))
+
+
+def getShopsByOwner(user_id):
+    sqlstatement = """SELECT * FROM Shops WHERE owner_id=%s"""
+    return getDataFromDB(sqlstatement, (user_id,))
 
 
 def getShopsByName(name):
@@ -182,139 +187,141 @@ def getShopsByName(name):
 
 
 def getCouponDetails(coupon_id):
-    sqlstatement = """SELECT * FROM Coupons WHERE coupon_ID=%s"""
+    sqlstatement = """SELECT * FROM Coupons WHERE coupon_id=%s"""
     return getDataFromDB(sqlstatement, (coupon_id,))
 
 
 def getOffersByShopID(shop_id):
-    sqlstatement = """SELECT * FROM Offers WHERE shop_ID=%s"""
+    sqlstatement = """SELECT * FROM Offers WHERE shop_id=%s"""
     return getDataFromDB(sqlstatement, (shop_id,))
 
 
 def getBuyerByCouponID(coupon_id):
-    sqlstatement = """SELECT Users.* FROM Users, Coupons WHERE Coupons.coupons_ID=%s AND Coupons.customer_id=Users.user_id"""
+    sqlstatement = """SELECT Users.* FROM Users, Coupons WHERE Coupons.coupons_id=%s AND Coupons.customer_id=Users.user_id"""
     return getDataFromDB(sqlstatement, (coupon_id,))
 
 
 def getVendorByCouponID(coupon_id):
-    sqlstatement = """SELECT Users.* FROM `Coupons` INNER JOIN Offers on Coupons.offer_ID=Offers.offer_ID INNER JOIN Shops on Offers.shop_ID=Shops.shop_ID INNER JOIN Users ON Shops.owner_id=Users.user_id WHERE Coupons.coupons_ID=%s"""
+    sqlstatement = """SELECT Users.* FROM `Coupons` INNER JOIN Offers on Coupons.offer_id=Offers.offer_id INNER JOIN Shops on Offers.shop_id=Shops.shop_id INNER JOIN Users ON Shops.owner_id=Users.user_id WHERE Coupons.coupons_id=%s"""
     getDataFromDB(sqlstatement, (coupon_id,))
 
 
-def getCouponsByUserID(user_ID):
-    sqlstatement = """SELECT coupons_ID,current_value,original_value,status,date_of_purchase FROM coupons WHERE customer_id=%s"""
-    return getDataFromDB(sqlstatement, (user_ID,))
+def getCouponsByUserID(user_id):
+    sqlstatement = """SELECT coupons_id,current_value,original_value,status,date_of_purchase FROM coupons WHERE customer_id=%s"""
+    return getDataFromDB(sqlstatement, (user_id,))
 
-def updateCouponValue(coupon_id,new_value,activated):
-    sqlstatement = """UPDATE coupons SET current_value=%s,status=%s WHERE coupons_ID=%s"""
-    data = (new_value,activated,coupon_id)
+
+def updateCouponValue(coupon_id, new_value, activated):
+    sqlstatement = """UPDATE coupons SET current_value=%s,status=%s WHERE coupons_id=%s"""
+    data = (new_value, activated, coupon_id)
     return updateDB(sqlstatement, data)
 
-def getUsedCouponsByUserID(user_ID):
-    sqlstatement = """SELECT coupons_ID,current_value,original_value,status,date_of_purchase FROM coupons WHERE customer_id=%s AND status='USED_UP'"""
-    return getDataFromDB(sqlstatement, (user_ID,))
+
+def getUsedCouponsByUserID(user_id):
+    sqlstatement = """SELECT coupons_id,current_value,original_value,status,date_of_purchase FROM coupons WHERE customer_id=%s AND status='USED_UP'"""
+    return getDataFromDB(sqlstatement, (user_id,))
 
 
-def getUserByMail(userMail):
-    sqlstatement = """SELECT * FROM Users WHERE emailAddress=%s"""
-    return getDataFromDB(sqlstatement, (userMail,))
+def getUserByMail(email_address):
+    sqlstatement = """SELECT * FROM Users WHERE email_address=%s"""
+    return getDataFromDB(sqlstatement, (email_address,))
 
 
-def insertUser(emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified, isOwner):
-    sqlstatement = """INSERT INTO Users (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, isVerified, isOwner) 
-                           VALUES (%s, %s,%s, %s, %s, %s, %s, %s, %s)"""
-    data = (emailAddress, firstname, lastname, phoneNumber, passwordHash, passwordSalt, token, False, isOwner)
+def insertUser(email_address, firstname, lastname, phone_number, password_hash, is_owner):
+    sqlstatement = """INSERT INTO Users (email_address, firstname, lastname, phone_number, password_hash, is_verified, is_owner) 
+                           VALUES (%s, %s,%s, %s, %s, %s, %s)"""
+    data = (email_address, firstname, lastname, phone_number, password_hash, False, is_owner)
     return insertIntoDB(sqlstatement, data)
 
 
-def createOfferFixedValue(shop_ID, offerType, name, description, value):
-    sqlstatement = """INSERT INTO Offers(shop_ID, offerType, name, description, value) 
+def createOfferFixedValue(shop_id, offer_type, name, description, value):
+    sqlstatement = """INSERT INTO Offers(shop_id, offer_type, name, description, value) 
                               VALUES (%s,%s,%s,%s,%s)"""
-    data = (shop_ID, offerType, name, description, value)
+    data = (shop_id, offer_type, name, description, value)
     return insertIntoDB(sqlstatement, data)
 
 
-def createOfferVariableValue(shop_ID, offerType, name, description):
-    sqlstatement = """INSERT INTO Offers(shop_ID, offerType, name, description) 
+def createOfferVariableValue(shop_id, offer_type, name, description):
+    sqlstatement = """INSERT INTO Offers(shop_id, offer_type, name, description) 
                               VALUES (%s,%s,%s,%s,%s)"""
-    data = (shop_ID, offerType, name, description)
+    data = (shop_id, offer_type, name, description)
     return insertIntoDB(sqlstatement, data)
 
 
-def insertCoupon(offer_ID, customer_ID, original_value, current_value, status, date_of_purchase):
-    sqlstatement = """INSERT INTO Coupons (offer_ID, customer_ID, original_value, current_value, status, date_of_purchase)
+def insertCoupon(offer_id, customer_id, original_value, current_value, status, date_of_purchase):
+    sqlstatement = """INSERT INTO Coupons (offer_id, customer_id, original_value, current_value, status, date_of_purchase)
                            VALUES (%s, %s, %s, %s, %s, %s)"""
-    data = (offer_ID, customer_ID, original_value, current_value, status, date_of_purchase)
+    data = (offer_id, customer_id, original_value, current_value, status, date_of_purchase)
     return insertIntoDB(sqlstatement, data)
 
 
-def insertShopDetails(shop_ID, owner_email, name, zipCode, city, street, description, Logo_URL, Link_Website,
-                      phoneNumber):
-    sqlstatement = """INSERT INTO Shops (shop_ID,owner_email,name,zipCode,city,street,description,Logo_URL,Link_Website,phoneNumber) 
-                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
-    data = (shop_ID, owner_email, name, zipCode, city, street, description, Logo_URL, Link_Website, phoneNumber)
+def insertShopDetails(owner_id, street, zip_code, city, website_url, phone_number, name, logo_url, description_short,
+                      description):
+    sqlstatement = """INSERT INTO Shops (owner_id, street, zip_code, city, website_url, phone_number, name, logo_url, description_short, description) 
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+    data = (owner_id, street, zip_code, city, website_url, phone_number, name, logo_url, description_short, description)
     return insertIntoDB(sqlstatement, data)
 
 
-def updateOfferDetail(offer_ID, newName, newDesciption, newValue):
-    sqlstatement = """UPDATE Offers SET name = %s, description = %s, value=%s WHERE offer_ID = %s"""
-    data = (newName, newDesciption, newValue, offer_ID)
+def updateOfferDetail(offer_id, name, description, value):
+    sqlstatement = """UPDATE Offers SET name = %s, description = %s, value=%s WHERE offer_id = %s"""
+    data = (name, description, value, offer_id)
     return updateDB(sqlstatement, data)
 
 
-def updateShowDetails(shop_ID, name, zipCode, city, street, description, Logo_URL, Link_Website, phoneNumber):
-    sqlstatement = """UPDATE Shops SET name=%s, zipCode=%s, city=%s, street=%s, description=%s, Logo_URL=%s, Link_Website=%s, phoneNumber=%s WHERE shop_ID=%s"""
-    data = (name, zipCode, city, street, description, Logo_URL, Link_Website, phoneNumber, shop_ID)
+def updateShopDetails(shop_id, name, zip_code, city, street, description, Logo_URL, Link_Website, phone_number):
+    sqlstatement = """UPDATE Shops SET name=%s, zip_code=%s, city=%s, street=%s, description=%s, Logo_URL=%s, Link_Website=%s, phone_number=%s WHERE shop_id=%s"""
+    data = (name, zip_code, city, street, description, Logo_URL, Link_Website, phone_number, shop_id)
     return updateDB(sqlstatement, data)
 
 
 def updateCurrentCouponValue(coupon_id, current_value):
-    sqlstatement = """Update Coupons SET current_value = %s WHERE CouponID = %s"""
+    sqlstatement = """Update Coupons SET current_value = %s WHERE ccupon_id = %s"""
     data = (current_value, coupon_id)
     return updateDB(sqlstatement, data)
 
 
 def updateCouponStatus(coupon_id, status):
-    sqlstatement = """Update Coupons SET status = %s WHERE CouponID = %s"""
+    sqlstatement = """Update Coupons SET status = %s WHERE ccupon_id = %s"""
     data = (status, coupon_id)
     return updateDB(sqlstatement, data)
 
 
-def verifyUser(user_ID):
-    sqlstatement = """UPDATE Users SET isVerified = True WHERE user_ID = %s"""
-    return updateDB(sqlstatement, (user_ID,))
+def verifyUser(user_id):
+    sqlstatement = """UPDATE Users SET is_verified = True WHERE user_id = %s"""
+    return updateDB(sqlstatement, (user_id,))
 
 
-def deleteOffer(offer_ID):
-    sqlstatement = """DELETE FROM Offers WHERE offer_ID = %s"""
-    deleteFromDB(sqlstatement, offer_ID)
+def deleteOffer(offer_id):
+    sqlstatement = """DELETE FROM Offers WHERE offer_id = %s"""
+    deleteFromDB(sqlstatement, offer_id)
 
 
-def deleteShop(shop_ID):
-    sqlstatement = """DELETE FROM Shops WHERE shop_ID = %s"""
-    deleteFromDB(sqlstatement, shop_ID)
+def deleteShop(shop_id):
+    sqlstatement = """DELETE FROM Shops WHERE shop_id = %s"""
+    deleteFromDB(sqlstatement, shop_id)
 
 
-def deleteCoupon(coupon_ID):
-    sqlstatement = """DELETE FROM coupons WHERE coupons_ID = %s"""
-    deleteFromDB(sqlstatement, coupon_ID)
+def deleteCoupon(coupon_id):
+    sqlstatement = """DELETE FROM coupons WHERE coupons_id = %s"""
+    deleteFromDB(sqlstatement, coupon_id)
 
 
-def deleteOwner(user_ID):
+def deleteOwner(user_id):
     deletion_done = False
     try:
         connection = getDbConnection()
         if connection.is_connected():
             cursor = connection.cursor()
             # First, check if the user is an owner
-            sqlstatement = """SELECT isOwner FROM users WHERE user_id = %s"""
-            cursor.execute(sqlstatement, (user_ID,))
+            sqlstatement = """SELECT is_owner FROM users WHERE user_id = %s"""
+            cursor.execute(sqlstatement, (user_id,))
             result_data = cursor.fetchall()
             if result_data:  # check if result is not empty
-                if 'isOwner' in result_data[0].keys():  # check if the wanted field is present
-                    if int(result_data[0]['isOwner']) == 1:
+                if 'is_owner' in result_data[0].keys():  # check if the wanted field is present
+                    if int(result_data[0]['is_owner']) == 1:
                         sqlstatement = """DELETE FROM users WHERE user_id = %s"""
-                        result = deleteFromDB(sqlstatement, user_ID)
+                        result = deleteFromDB(sqlstatement, user_id)
                         deletion_done = result.get('success')
                         if deletion_done:
                             print(cursor.rowcount, "Owner deleted successfully in Users table")
@@ -326,22 +333,22 @@ def deleteOwner(user_ID):
     return {'success': deletion_done}
 
 
-def deleteCustomer(user_ID):
+def deleteCustomer(user_id):
     deletion_done = False
     try:
         connection = getDbConnection()
         if connection.is_connected():
             cursor = connection.cursor()
             # First, check if the user is a customer
-            sqlstatement = """SELECT isOwner FROM users WHERE user_id = %s"""
-            cursor.execute(sqlstatement, (user_ID,))
+            sqlstatement = """SELECT is_owner FROM users WHERE user_id = %s"""
+            cursor.execute(sqlstatement, (user_id,))
             result_data = cursor.fetchall()
             if result_data:  # check if result is not empty
-                if 'isOwner' in result_data[0].keys():  # check if the wanted field is present
-                    if int(result_data[0]['isOwner']) == 0:
+                if 'is_owner' in result_data[0].keys():  # check if the wanted field is present
+                    if int(result_data[0]['is_owner']) == 0:
                         sqlstatement = """DELETE FROM users WHERE user_id = %s"""
-                        cursor.execute(sqlstatement, user_ID)
-                        result = deleteFromDB(sqlstatement, user_ID)
+                        cursor.execute(sqlstatement, user_id)
+                        result = deleteFromDB(sqlstatement, user_id)
                         deletion_done = result.get('success')
                         if deletion_done:
                             print(cursor.rowcount, "Customer deleted successfully in Users table")

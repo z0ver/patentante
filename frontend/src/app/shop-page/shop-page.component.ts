@@ -19,7 +19,7 @@ export class ShopPageComponent implements OnInit {
     const place = this.router.getCurrentNavigation().extras.state
 
     this.shop.short_description.name = place.information_basic.name
-    this.shop.short_description.description_short = place.information_basic.description_short
+    this.shop.short_description.short_information = place.information_basic.description_short
     this.shop.address.place = place.address.city
     this.shop.address.number = place.address.street
     this.shop.address.postcode = place.address.zip_code

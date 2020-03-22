@@ -22,6 +22,16 @@ export class ShopSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.api.getProfile(this.userId)?.subscribe()
+    this.profile = new DealerProfile()
+    this.profile.address.email = "test@test.de"
+    this.profile.address.number = 10
+    this.profile.address.postcode = "04317"
+    this.profile.address.place = "Prager Straße"
+    this.profile.short_description = {
+      "name": "Mein Shop",
+      "logo": "LogoURL",
+      "short_information": "Wir sind ein schöner Laden",
+    }
     // set dealerprofile
   }
 

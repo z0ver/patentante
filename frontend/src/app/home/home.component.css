@@ -23,6 +23,7 @@
 
 .shop-container {
   border:1px solid black;
+  border-radius: 6px;
   height: 40px;
   padding: 10px;
 }

@@ -140,6 +140,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
               "number": "10",
             },
             "short_description": {
+              "telephon": "05968605958",
               "name": "Mein Shop",
               "logo": "LogoURL",
               "short_information": "Wir sind ein schöner Laden",

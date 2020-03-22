@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
 import {ApiService} from "../service/api.service";
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-shop-registration',
@@ -16,7 +16,8 @@ export class ShopRegistrationComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private api: ApiService
+    private api: ApiService,
+    private router: Router
   ) {
   }
 
@@ -31,7 +32,8 @@ export class ShopRegistrationComponent implements OnInit {
   async onSubmit() {
     this.loginInvalid = false;
     this.formSubmitAttempt = false;
-    if (this.form.valid) {
+    this.router.navigateByUrl('/shop-settings');
+    /*if (this.form.valid) {
       try {
         const username = this.form.get('username').value;
         const password = this.form.get('password').value;
@@ -43,7 +45,7 @@ export class ShopRegistrationComponent implements OnInit {
     } else {
       this.formSubmitAttempt = true;
     }
-    // todo route to settings
+    // todo route to settings*/
   }
 
 }

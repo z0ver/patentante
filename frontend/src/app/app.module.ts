@@ -17,6 +17,9 @@ import {ShopPageComponent} from './shop-page/shop-page.component';
 import { HelpButtonComponent } from './shop-page/help-button/help-button.component';
 import {MatRippleModule} from "@angular/material/core";
 import { AidBaseComponent } from './aid-base/aid-base.component';
+import { DialogComponent } from './dialog/dialog.component'
+import {MatDialogModule} from '@angular/material';
+import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 const appRoutes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -39,7 +42,8 @@ const appRoutes: Routes = [
     ShopSettingsComponent,
     ShopPageComponent,
     HelpButtonComponent,
-    AidBaseComponent
+    AidBaseComponent,
+    DialogComponent,
   ],
   imports: [
     RouterModule.forRoot(
@@ -53,10 +57,13 @@ const appRoutes: Routes = [
     MaterialModule,
     HttpClientModule,
     FormsModule,
-    MatRippleModule
+    MatRippleModule,
+    BrowserAnimationsModule,
+    MatDialogModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [DialogComponent]
 })
 export class AppModule {
 }

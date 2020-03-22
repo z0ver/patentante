@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>{{coupon.buttonContent.header}}</h2>
+
+<mat-dialog-content>
+  <div>
+    {{coupon.buttonContent.description}}
+  </div>
+  <div>
+    <input matInput placeholder="E-Mail"
+  </div>
+  <div>
+    Vielen Dank für dein Engagement
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button class="mat-raised-button"(click)="close()">Close</button>
+  <button class="mat-raised-button mat-primary"(click)="save()">Save</button>
+</mat-dialog-actions>

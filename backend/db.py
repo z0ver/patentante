@@ -202,14 +202,21 @@ def getBuyerByCouponID(coupon_id):
 
 
 def getVendorByCouponID(coupon_id):
-    sqlstatement = """SELECT Users.* FROM `Coupons` INNER JOIN Offers on Coupons.offer_id=Offers.offer_id INNER JOIN Shops on Offers.shop_id=Shops.shop_id INNER JOIN Users ON Shops.owner_id=Users.user_id WHERE Coupons.coupons_id=%s"""
+    sqlstatement = """SELECT Users.* FROM Coupons INNER JOIN Offers on Coupons.offer_id=Offers.offer_id INNER JOIN Shops on Offers.shop_id=Shops.shop_id INNER JOIN Users ON Shops.owner_id=Users.user_id WHERE Coupons.coupons_id=%s"""
     getDataFromDB(sqlstatement, (coupon_id,))
 
 
-def getCouponsByUserID(user_id):
-    sqlstatement = """SELECT coupons_id,current_value,original_value,status,date_of_purchase FROM coupons WHERE customer_id=%s"""
-    return getDataFromDB(sqlstatement, (user_id,))
+def getCouponsByCustomerID(customer_id):
+    sqlstatement = """SELECT * FROM coupons WHERE customer_id=%s"""
+    return getDataFromDB(sqlstatement, (customer_id,))
 
+def getCouponsByCouponID(coupon_id):
+    sqlstatement = """SELECT * FROM coupons WHERE coupon_id=%s"""
+    return getDataFromDB(sqlstatement, (coupon_id,))
+
+def getCouponsByShopID(shop_id):
+    sqlstatement = """SELECT coupons.* FROM coupons INNER JOIN Offers on coupons.offer_id=offers.offer_id WHERE offers.shop_id=%s"""
+    return getDataFromDB(sqlstatement, (shop_id,))
 
 def updateCouponValue(coupon_id, new_value, activated):
     sqlstatement = """UPDATE coupons SET current_value=%s,status=%s WHERE coupons_id=%s"""

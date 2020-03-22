@@ -118,76 +118,6 @@ def loggedin_page():
     else:
         return redirect(url_for('login_page'))
 
-
-# Get all coupons for the vendor which are already used up
-@app.route('/vendor/used_coupons', methods=['GET'])
-def vendor_coupon_used():
-    profile_id = request.args.get('profileId')
-    return response_valid_request(getUsedCouponsByUserID(profile_id))
-
-
-# Update value and potentially devalue it
-@app.route('/vendor/devalue_coupon', methods=['PUT'])
-def vendor_devalue_coupon():
-    data = request.get_json()
-    used_coupon_id = data.get('used_couponId')
-    new_value = data.get('new_value')
-    activated = data.get('activated')
-    return response_valid_request(updateCouponValue(used_coupon_id, new_value, activated))
-
-
-# Get all shops for a specific PLZ
-@app.route('/customer/list_shops', methods=['GET'])
-def get_shops_by_zip():
-    zip_code = request.args.get('zip_code')
-    database_responses = getShopsByZipCode(zip_code)
-    final_response = [{
-        "shop_id": database_response.get("shop_id"),
-        "owner_id": database_response.get("owner_id"),
-        "address'": {
-            "street": database_response.get("street"),
-            "zip_code": database_response.get("zip_code"),
-            "city": database_response.get("city"),
-            "website_url": database_response.get("website_url"),
-            "phone_number": database_response.get("phone_number")
-        },
-        "information_basic'": {
-            "name": database_response.get("name"),
-            "logo_url": database_response.get("logo_url"),
-            "description_short": database_response.get("description_short")
-        },
-        "description": database_response.get("description"),
-        "offers": getOffersByShopID(database_response.get("shop_id"))
-    } for database_response in database_responses]
-    return response_valid_request(final_response)
-
-
-@app.route('/shops/name', methods=['GET'])
-def shops_by_name():
-    if request.method == 'GET':
-        shopname = request.args.get('name')
-        return response_valid_request(getShopsByName(shopname))
-
-
-# Get or create coupons for the vendor
-@app.route('/vendor/coupons', methods=['GET', 'POST'])
-def vendor_coupon():
-    if request.method == 'POST':
-        data = request.get_json()
-        profile_id = data.get('profile_id')
-        offer_id = data.get('offer_id')
-        coupon_value = data.get('value')
-        price = data.get('price')
-        status = data.get('status')
-        query_result = insertCoupon(offer_id=offer_id, customer_id=profile_id, original_value=price,
-                                    current_value=coupon_value,
-                                    status=status, date_of_purchase=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        return {"couponId": query_result.get("inserted_row")}
-    elif request.method == 'GET':
-        profile_id = request.args.get('profileId')
-        return response_valid_request(getCouponsByUserID(profile_id))
-
-
 @app.route('/user/login', methods=['POST'])
 def login_user():
     if request.method == 'POST':
@@ -195,30 +125,14 @@ def login_user():
         email = data.get('email')
         password = data.get('password')
         hash = getUserByMail(email)
-        if hash != []:
+        if hash:
             if check_password(password.encode('utf8'), hash[0].get('password_hash').encode('utf8')):
                 return response_valid_request({"user_id": hash[0].get('user_id'), "is_owner": hash[0].get('is_owner')})
         else:
             return response_unauthorized_request()
 
 
-# Request a new coupon for a customer
-@app.route('/customer/request_coupon', methods=['POST'])
-def request_coupon():
-    data = request.get_json()
-    customer_id = data.get('customer_id')
-    offer_id = data.get('offer_id')
-    original_value = data.get('original_value')
-    query_result = insertCoupon(offer_id=offer_id, customer_id=customer_id, original_value=original_value,
-                                current_value=original_value, status='ACTIVATE',
-                                date_of_purchase=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    if query_result.get('success'):
-        return response_valid_request({"coupon_id": query_result.get("inserted_id")})
-    else:
-        return response_invalid_request()
-
-
-@app.route('/customer/register', methods=['POST'])
+@app.route('/user/customer/register', methods=['POST'])
 def register_customer():
     if request.method == 'POST':
         data = request.get_json()
@@ -234,8 +148,25 @@ def register_customer():
         else:
             return response_invalid_request()
 
+# Issue a new coupon or retrieve one by id
+@app.route('/user/vendor/coupon', methods=['POST'])
+def vendor_coupon():
+    if request.method == 'POST':
+        data = request.get_json()
+        customer_id = data.get('customer_id')
+        offer_id = data.get('offer_id')
+        original_value = data.get('original_value')
+        query_result = insertCoupon(offer_id=offer_id, customer_id=customer_id, original_value=original_value,
+                                    current_value=original_value, status='ACTIVATE',
+                                    date_of_purchase=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        if query_result.get('success'):
+            return response_valid_request({"coupon_id": query_result.get("inserted_id")})
+        else:
+            return response_invalid_request()
 
-@app.route('/vendor/register', methods=['POST'])
+
+
+@app.route('/user/vendor/register', methods=['POST'])
 def register_vendor():
     if request.method == 'POST':
         data = request.get_json()
@@ -250,51 +181,6 @@ def register_vendor():
             return response_valid_request({"user_id": result.get('inserted_id')})
         else:
             return response_invalid_request()
-
-
-# Get all shops for a specific vendor
-@app.route('/vendor/shops', methods=['GET', 'POST'])
-def get_shops_by_vendor():
-    if request.method == 'GET':
-        user_id = request.args.get('user_id')
-        database_responses = getShopsByOwner(user_id)
-        final_response = [{
-            "shop_id": database_response.get("shop_id"),
-            "address'": {
-                "street": database_response.get("street"),
-                "zip_code": database_response.get("zip_code"),
-                "city": database_response.get("city"),
-                "website_url": database_response.get("website_url"),
-                "phone_number": database_response.get("phone_number")
-            },
-            "information_basic'": {
-                "name": database_response.get("name"),
-                "logo_url": database_response.get("logo_url"),
-                "description_short": database_response.get("description_short")
-            },
-            "description": database_response.get("description"),
-        } for database_response in database_responses]
-        return response_valid_request(final_response)
-    elif request.method == 'POST':
-        data = request.get_json()
-        owner_id = data.get('owner_id')
-        street = data.get('street')
-        zip_code = data.get('zip_code')
-        city = data.get('city')
-        website_url = data.get('website_url')
-        phone_number = data.get('phone_number')
-        name = data.get('name')
-        logo_url = data.get('logo_url')
-        description_short = data.get('description_short')
-        description = data.get('description')
-        result = insertShopDetails(owner_id, street, zip_code, city, website_url, phone_number, name, logo_url,
-                                   description_short, description)
-        if result.get('success'):
-            return response_valid_request({"shop_id": result.get('inserted_id')})
-        else:
-            return response_invalid_request()
-        pass
-
 
 if __name__ == '__main__':
     app.run()

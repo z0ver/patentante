@@ -241,17 +241,10 @@ def insertUser(email_address, firstname, lastname, phone_number, password_hash, 
     return insertIntoDB(sqlstatement, data)
 
 
-def createOfferFixedValue(shop_id, offer_type, name, description, value):
-    sqlstatement = """INSERT INTO Offers(shop_id, offer_type, name, description, value) 
+def createOffer(shop_id, offerType, name, description, value=0):
+    sqlstatement = """INSERT INTO Offers(shop_id, offerType, name, description, value) 
                               VALUES (%s,%s,%s,%s,%s)"""
-    data = (shop_id, offer_type, name, description, value)
-    return insertIntoDB(sqlstatement, data)
-
-
-def createOfferVariableValue(shop_id, offer_type, name, description):
-    sqlstatement = """INSERT INTO Offers(shop_id, offer_type, name, description) 
-                              VALUES (%s,%s,%s,%s,%s)"""
-    data = (shop_id, offer_type, name, description)
+    data = (shop_id, offerType, name, description, value)
     return insertIntoDB(sqlstatement, data)
 
 

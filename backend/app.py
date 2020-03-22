@@ -252,6 +252,24 @@ def get_coupons_by_shop():
     return response_valid_request(getCouponsByShopID(shop_id))
 
 
+@app.route('/user/vendor/offer', methods=['POST', 'GET'])
+def vendor_offer():
+    if request.method == 'POST':
+        data = request.get_json()
+        shop_id = data.get('shop_id')
+        offerType = data.get('offerType')
+        name = data.get('name')
+        description = data.get('description')
+        value = data.get('value')
+        result = createOffer(shop_id=shop_id, offerType=offerType, name=name,
+                             description=description, value=value)
+        if result.get('success'):
+            return response_valid_request({"offer_id": result.get("inserted_id")})
+        else:
+            return response_invalid_request()
+    elif request.method == 'GET':
+         shop_id = request.args.get('shop_id')
+         return response_valid_request(getOffersByShopID(shop_id))
 
 if __name__ == '__main__':
     app.run()

@@ -3,13 +3,14 @@
 import bcrypt
 import mysql.connector
 
-#todo how to deal with invite mode?
-
 # Get Database connection details from app configuration
 from config import db_host as host
 from config import db_passwd as passwd
 from config import db_session_timeout as timeout
 from config import db_user as user
+
+
+# todo how to deal with invite mode?
 
 
 def get_hashed_password(plain_text_password):
@@ -215,15 +216,15 @@ def getCouponsByCustomerID(customer_id):
     sqlstatement = """SELECT * FROM coupons WHERE customer_id=%s"""
     return getDataFromDB(sqlstatement, (customer_id,))
 
+
 def getCouponByCouponID(coupon_id):
     sqlstatement = """SELECT * FROM coupons WHERE coupon_id=%s"""
     return getDataFromDB(sqlstatement, (coupon_id,))
 
+
 def getCouponsByShopID(shop_id):
     sqlstatement = """SELECT coupons.* FROM coupons INNER JOIN Offers on coupons.offer_id=offers.offer_id WHERE offers.shop_id=%s"""
     return getDataFromDB(sqlstatement, (shop_id,))
-
-
 
 
 def getUsedCouponsByUserID(user_id):
@@ -276,10 +277,12 @@ def updateShopDetails(shop_id, name, zip_code, city, street, description, Logo_U
     data = (name, zip_code, city, street, description, Logo_URL, Link_Website, phone_number, shop_id)
     return updateDB(sqlstatement, data)
 
+
 def updateCouponValue(coupon_id, new_value, activated):
     sqlstatement = """UPDATE coupons SET current_value=%s,status=%s WHERE coupon_id=%s"""
     data = (new_value, activated, coupon_id)
     return updateDB(sqlstatement, data)
+
 
 def updateCurrentCouponValue(coupon_id, current_value):
     sqlstatement = """Update Coupons SET current_value = %s WHERE coupon_id = %s"""

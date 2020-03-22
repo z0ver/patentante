@@ -23,6 +23,7 @@ export class ShopPageComponent implements OnInit {
     this.shop.address.place = place.address.place
     this.shop.address.number = place.address.number
     this.shop.address.postcode = place.address.postCode
+    this.shop.description.long_information = place.description.long_information
   }
 
   ngOnInit(): void {

@@ -1,10 +1,10 @@
 <h2 mat-dialog-title class="flex">{{coupon.buttonContent.header}}</h2>
 
 <mat-dialog-content>
-  <div class="flex">
+  <div class="flex" style="text-align: center;">
     {{coupon.buttonContent.description}}
   </div>
-  <div class="data" *ngIf="isSended != true">
+  <div class="data fields" *ngIf="isSended != true">
     <mat-form-field class="example-full-width">
       <input type="email" matInput placeholder="E-Mail" value="{{mail}}" (change)="changeMail($event)"/>
     </mat-form-field>

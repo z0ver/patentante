@@ -7,5 +7,5 @@ export class DealerProfile {
   address: Address = new Address();
   owner: string;
   short_description: DealerShortDescription = new DealerShortDescription();
-  description: DealerDescription;
+  description: DealerDescription = new DealerDescription();
 }

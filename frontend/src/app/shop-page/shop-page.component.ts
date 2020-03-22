@@ -18,12 +18,12 @@ export class ShopPageComponent implements OnInit {
   constructor(private router:Router, private activatedRoute:ActivatedRoute, public dialog: MatDialog) {
     const place = this.router.getCurrentNavigation().extras.state
 
-    this.shop.short_description.name = place.short_description.name
-    this.shop.short_description.short_information = place.short_description.short_information
-    this.shop.address.place = place.address.place
-    this.shop.address.number = place.address.number
-    this.shop.address.postcode = place.address.postCode
-    this.shop.description.long_information = place.description.long_information
+    this.shop.short_description.name = place.information_basic.name
+    this.shop.short_description.description_short = place.information_basic.description_short
+    this.shop.address.place = place.address.city
+    this.shop.address.number = place.address.street
+    this.shop.address.postcode = place.address.zip_code
+    this.shop.description.long_information = place.description
   }
 
   ngOnInit(): void {

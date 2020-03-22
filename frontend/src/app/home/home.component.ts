@@ -146,7 +146,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
               "short_information": "Wir sind ein schöner Laden",
             },
             "description": {
-              "long_information": "Wir sind ein schöner Laden"
+              "long_information": "Wir sind ein schöner Laden aber lang"
             }
         }]
 

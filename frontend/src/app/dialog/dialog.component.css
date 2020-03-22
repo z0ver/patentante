@@ -1,0 +1,13 @@
+.data {
+  margin: 10px;
+}
+
+.response {
+  font-weight: bold;
+  margin: 10px;
+}
+
+.flex {
+  display: flex;
+  justify-content: center;
+}

@@ -1,17 +1,27 @@
-<h2 mat-dialog-title>{{coupon.buttonContent.header}}</h2>
+<h2 mat-dialog-title class="flex">{{coupon.buttonContent.header}}</h2>
 
 <mat-dialog-content>
-  <div>
+  <div class="flex">
     {{coupon.buttonContent.description}}
   </div>
-  <div>
-    <input matInput placeholder="E-Mail"
+  <div class="data" *ngIf="isSended != true">
+    <mat-form-field class="example-full-width">
+      <input type="email" matInput placeholder="E-Mail" value="{{mail}}" (change)="changeMail($event)"/>
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <input type="number" matInput placeholder="Spende" value="{{donation}}" (change)="changeDonation($event)"/>
+    </mat-form-field>
   </div>
-  <div>
-    Vielen Dank für dein Engagement
+  <div class="response" *ngIf="isSended == true">
+    <div>
+      Vielen Dank für dein Engagement.
+    </div>
+    <div>
+      Sie werden in kurzer Zeit eine E-Mail erhalten.
+    </div>
   </div>
 </mat-dialog-content>
-<mat-dialog-actions>
+<mat-dialog-actions class="flex">
   <button class="mat-raised-button"(click)="close()">Close</button>
-  <button class="mat-raised-button mat-primary"(click)="save()">Save</button>
+  <button *ngIf="isSended != true" class="mat-raised-button mat-primary"(click)="save()">Save</button>
 </mat-dialog-actions>

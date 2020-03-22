@@ -36,7 +36,7 @@ export class ShopPageComponent implements OnInit {
 
   onHelpButtonClick(buttonContent: HelpButtonContent) {
     let dialogRef = this.dialog.open(DialogComponent, {
-      width: '250px',
+      width: '350px',
       data: { buttonContent: buttonContent }
     });
     dialogRef.afterClosed().subscribe((result) => {

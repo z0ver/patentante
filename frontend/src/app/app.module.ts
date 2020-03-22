@@ -63,7 +63,7 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [DialogComponent]
+  entryComponents: [DialogComponent, AppComponent, HomeComponent]
 })
 export class AppModule {
 }

@@ -11,3 +11,9 @@
   display: flex;
   justify-content: center;
 }
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

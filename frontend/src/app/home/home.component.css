@@ -32,6 +32,10 @@
   display: flex;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .shop-label {
   flex: 1
 }

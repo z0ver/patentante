@@ -62,6 +62,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   loadMap() {
+    // load the map with the center of berlin
     this.map = L.map('map').setView([52.520008, 13.404954], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -70,6 +71,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (window.navigator && window.navigator.geolocation) {
         window.navigator.geolocation.getCurrentPosition(
             position => {
+                // if the user allowed the geolocation the shops where requested and the map is resized
                 this.geolocationPosition = position
                 this.lat = this.geolocationPosition.coords.latitude
                 this.long = this.geolocationPosition.coords.longitude
@@ -121,7 +123,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   public shopClicked(place) {
     this.router.navigateByUrl('/shop-page', { state: place });
-    console.log("go to shop")
   }
 
   requestShops() {
@@ -139,7 +140,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
         const provider = new OpenStreetMapProvider();
 
-        // should add a marker forEach place
+        // add a marker for each place
         this.places.forEach((place) => {
           provider
             .search({query: place.address.street + " " + place.address.zip_code})

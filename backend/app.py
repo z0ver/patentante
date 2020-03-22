@@ -25,7 +25,7 @@ def some_random_name():
 from datetime import datetime
 
 import simplejson as json
-from flask import Flask, redirect, url_for, session, render_template, request, Response
+from flask import Flask, request, Response
 from flask_cors import CORS
 
 from config import secret_key

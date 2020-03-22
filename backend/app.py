@@ -245,6 +245,7 @@ def get_offer_by_shop():
     shop_id = request.args.get('shop_id')
     return response_valid_request(getOffersByShopID(shop_id))
 
+
 # Get all coupons for a shop
 @app.route('/shops/coupons', methods=['GET'])
 def get_coupons_by_shop():
@@ -268,8 +269,52 @@ def vendor_offer():
         else:
             return response_invalid_request()
     elif request.method == 'GET':
-         shop_id = request.args.get('shop_id')
-         return response_valid_request(getOffersByShopID(shop_id))
+        shop_id = request.args.get('shop_id')
+        return response_valid_request(getOffersByShopID(shop_id))
+
+
+# add a new shop for a owner and get all shops for an owner
+@app.route('/user/vendor/shops', methods=['POST', 'GET'])
+def register_shop_and_retrieve_by_owner():
+    if request.method == 'POST':
+        data = request.get_json()
+        owner_id = data.get('owner_id')
+        street = data.get('street')
+        zip_code = data.get('zip_code')
+        city = data.get('city')
+        website_url = data.get('website_url')
+        phone_number = data.get('phone_number')
+        name = data.get('name')
+        logo_url = data.get('logo_url')
+        description_short = data.get('description_short')
+        description = data.get('description')
+        result = insertShopDetails(owner_id, street, zip_code, city, website_url, phone_number, name, logo_url,
+                                   description_short, description)
+        if result.get('success'):
+            return response_valid_request({"shop_id": result.get('inserted_id')})
+        else:
+            return response_invalid_request()
+    elif request.method == 'GET':
+        owner_id = request.args.get('owner_id')
+        database_responses = getShopsByOwner(owner_id)
+        final_response = [{
+            "shop_id": database_response.get("shop_id"),
+            "address'": {
+                "street": database_response.get("street"),
+                "zip_code": database_response.get("zip_code"),
+                "city": database_response.get("city"),
+                "website_url": database_response.get("website_url"),
+                "phone_number": database_response.get("phone_number")
+            },
+            "information_basic'": {
+                "name": database_response.get("name"),
+                "logo_url": database_response.get("logo_url"),
+                "description_short": database_response.get("description_short")
+            },
+            "description": database_response.get("description"),
+        } for database_response in database_responses]
+        return response_valid_request(final_response)
+
 
 if __name__ == '__main__':
     app.run()
